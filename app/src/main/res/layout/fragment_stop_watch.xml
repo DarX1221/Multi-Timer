@@ -73,11 +73,11 @@
 
 
         </LinearLayout>
-            <fragment
-                android:id="@+id/fragment_set_conteiner"
-                android:name="com.example.multitimer.SettingsFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#7A7A7A"
+                android:id="@+id/settings_container"/>
 
 
         </LinearLayout>
