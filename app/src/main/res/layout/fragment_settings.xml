@@ -22,11 +22,11 @@
         android:text="Name" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/setname_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Set Name"
-        android:onClick="setName"/>
+        android:onClick="setName" />
 
 </LinearLayout>
 

@@ -8,8 +8,9 @@ import android.view.View;
 
 import java.util.ArrayList;
 
-public class StopWatchActivity extends AppCompatActivity {
+public class StopWatchActivity extends AppCompatActivity  {
     ArrayList<StopWatchFragment> listOfSW = new ArrayList();
+    private SettingsFragment settingsFragment;
 
 
 
@@ -27,6 +28,8 @@ public class StopWatchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
+
+        settingsFragment = new SettingsFragment();
 
         StopWatchFragment stopWatchFragment = new StopWatchFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

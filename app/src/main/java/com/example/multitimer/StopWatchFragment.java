@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EdgeEffect;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,8 +20,9 @@ import android.widget.Toast;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StopWatchFragment extends Fragment implements View.OnClickListener {
+public class StopWatchFragment extends Fragment implements View.OnClickListener, SettingsFragment.FragmentNameListener{
     boolean running = false;
+    TextView textView;
 
 
     public StopWatchFragment() {
@@ -34,6 +37,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener 
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
 
+        textView = view.findViewById(R.id.stop_watch_name);
 
         Button startButton = (Button) view.findViewById(R.id.start_button);
         startButton.setOnClickListener(this);
@@ -72,6 +76,17 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener 
                 break;
         }
     }
+
+
+
+
+    void setName(String name){
+        textView.setText(name);
+    }
+
+
+
+
 
 
     String stopWatchTime;
@@ -139,8 +154,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener 
 
 
         SettingsFragment settingsFragment = new SettingsFragment();
-        Toast toast = Toast.makeText(getContext(), "settings", Toast.LENGTH_LONG);
-        toast.show();
+
         FragmentTransaction transactionSet = getChildFragmentManager().beginTransaction();
         transactionSet.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transactionSet.replace(R.id.settings_container, settingsFragment);
@@ -162,18 +176,10 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener 
 
 
         if(showSettings){
-
-            Toast toast2 = Toast.makeText(getContext(), "settings if true", Toast.LENGTH_SHORT);
-            toast2.show();
             transactionSet.replace(R.id.settings_container, settingsFragment);
             showSettings = false;}
         else{
-            Toast toast3 = Toast.makeText(getContext(), "settings if false", Toast.LENGTH_SHORT);
-            toast3.show();
-
             transactionSet.remove(settingsFragment);
-
-
             showSettings=true; }
         //transactionSet.addToBackStack(null);
         transactionSet.commit();
@@ -181,16 +187,10 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
-
-
-
-
-    String name;
-    void setName(){
-
-
+    @Override
+    public void onInputNameSent(String input) {
+        Toast.makeText(getContext(), "setname_button2", Toast.LENGTH_SHORT).show();
+        textView.setText(input);
     }
-
 }
 
