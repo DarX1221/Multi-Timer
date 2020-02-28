@@ -1,6 +1,5 @@
 package com.example.multitimer;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,34 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EdgeEffect;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class StopWatchFragment extends Fragment implements View.OnClickListener{
     boolean running = false;
     TextView textView;
-
-
-    public StopWatchFragment() {
-        // Required empty public constructor
-
-
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
-
         textView = view.findViewById(R.id.stop_watch_name);
-
         Button startButton = (Button) view.findViewById(R.id.start_button);
         startButton.setOnClickListener(this);
         Button stopButton = (Button) view.findViewById(R.id.stop_button);
@@ -48,14 +32,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         Button setButton = (Button) view.findViewById(R.id.setting_button);
         setButton.setOnClickListener(this);
         runTimer(view);
-
-       /* SettingsFragment settingsFragment = new SettingsFragment();
-        FragmentTransaction transactionSet = getChildFragmentManager().beginTransaction();
-        transactionSet.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transactionSet.replace(R.id.settings_container, settingsFragment);
-        transactionSet.commit();*/
-
-
         return view;
     }
 
@@ -77,26 +53,12 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-
-
-
-    void setName(String name){
-        textView.setText(name);
-    }
-
-
-
-
-
-
     String stopWatchTime;
     int seconds;
     long clockNow, clockStop, clockSum;
     long clockStart = System.currentTimeMillis();
 
     public void runTimer(final View view) {
-
-
         final TextView stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
         final Handler handler = new Handler();
 
@@ -148,33 +110,12 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     }
 
     boolean showSettings = true;
-    boolean create = false;
 
     public void openSettingFragment(View view){
-
-
         SettingsFragment settingsFragment = new SettingsFragment();
-
         FragmentTransaction transactionSet = getChildFragmentManager().beginTransaction();
         transactionSet.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transactionSet.replace(R.id.settings_container, settingsFragment);
-        //transactionSet.remove(settingsFragment);
-
-
-
-
-
-        /*SettingsFragment settingsFragment2 = new SettingsFragment();
-        Toast toast2 = Toast.makeText(getContext(), "settings2", Toast.LENGTH_LONG);
-        toast2.show();
-        FragmentTransaction transactionSet2 = getChildFragmentManager().beginTransaction();
-        transactionSet2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        //transactionSet2.replace(R.id.settings_container, settingsFragment2);
-        transactionSet2.remove(settingsFragment2);
-        transactionSet2.commit();*/
-
-
-
         if(showSettings){
             transactionSet.replace(R.id.settings_container, settingsFragment);
             showSettings = false;}
@@ -183,14 +124,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
             showSettings=true; }
         //transactionSet.addToBackStack(null);
         transactionSet.commit();
-        //transactionSet.remove(settingsFragment);
     }
-
-/*
-    @Override
-    public void onInputNameSent(String input) {
-        Toast.makeText(getContext(), "setname_button2", Toast.LENGTH_SHORT).show();
-        textView.setText(input);
-    }*/
 }
 
