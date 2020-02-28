@@ -20,9 +20,6 @@ public class SettingsFragment extends Fragment {
     private EditText editText;
     private Button setNameButton;
 
-
-
-
     public interface FragmentNameListener {
         void onInputNameSent(String input);
     }
@@ -44,6 +41,8 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
+
+
     private FragmentNameListener listener = new FragmentNameListener() {
         @Override
         public void onInputNameSent(String input) {
@@ -61,6 +60,11 @@ public class SettingsFragment extends Fragment {
         }else {throw new RuntimeException(context.toString() +
                 "implement FragmentNameListener");}
     }
+/*
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+
+    }*/
 
     @Override
     public void onDetach(){

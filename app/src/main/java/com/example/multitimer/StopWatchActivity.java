@@ -21,6 +21,10 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
 
+        if(savedInstanceState != null){
+
+        }
+
         textView = (TextView) findViewById(R.id.stop_watch_name);
         settingsFragment = new SettingsFragment();
         StopWatchFragment stopWatchFragment = new StopWatchFragment();
@@ -31,6 +35,10 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         fragmentTransaction.commit();
 
     }
+
+
+
+
     public void addClick(View view) {
         listOfSW.add(new StopWatchFragment());
         int lengthOfList = listOfSW.size();
@@ -40,8 +48,19 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         fragmentTransaction2.commit();
     }
 
+    String nameTimer;
     @Override
     public void onInputNameSent(String input) {
+        nameTimer = input;
         textView.setText(input);
     }
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
 }

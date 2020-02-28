@@ -21,6 +21,13 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(savedInstanceState != null){
+            running = savedInstanceState.getBoolean("runningTimer");
+            clockSum = savedInstanceState.getLong("clockSum");
+            clockStart = savedInstanceState.getLong("clockStart");
+            clockStop = savedInstanceState.getLong("clockStop");
+            seconds = savedInstanceState.getInt("seconds");
+        }
         View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
         textView = view.findViewById(R.id.stop_watch_name);
         Button startButton = (Button) view.findViewById(R.id.start_button);
@@ -124,6 +131,18 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
             showSettings=true; }
         //transactionSet.addToBackStack(null);
         transactionSet.commit();
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putBoolean("runningTimer", running);
+        savedInstanceState.putLong("clockSum", clockSum);
+        savedInstanceState.putLong("clockStart", clockStart);
+        savedInstanceState.putLong("clockStop", clockStop);
+        savedInstanceState.putString("nameTimer", textView.getText().toString());
+        savedInstanceState.putInt("seconds", seconds);
+
     }
 }
 
