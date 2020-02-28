@@ -16,16 +16,17 @@ import android.widget.Toast;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends Fragment implements View.OnClickListener {
+public class SettingsFragment extends Fragment {
     private EditText editText;
     private Button setNameButton;
-    private FragmentNameListener listener;
+
 
 
 
     public interface FragmentNameListener {
         void onInputNameSent(String input);
     }
+
 
 
 
@@ -50,7 +51,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         //Buttony z yt
         editText = view.findViewById(R.id.editText);
         setNameButton = view.findViewById(R.id.setname_button);
-        setNameButton.setOnClickListener(this);
+        setNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String input = editText.getText().toString();
+                listener.onInputNameSent(input);
+            }
+        });
 
 
 
@@ -61,7 +68,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    private FragmentNameListener listener = new FragmentNameListener() {
+        @Override
+        public void onInputNameSent(String input) {
+            Toast.makeText(getContext(), "setname_button", Toast.LENGTH_SHORT).show();
+            String name = editText.getText().toString();
+            listener.onInputNameSent(name);
+        }
+    };
 
+    /*
     @Override
     public void onClick(View v) {
         Toast.makeText(getContext(), "setname_button", Toast.LENGTH_SHORT).show();
@@ -71,7 +87,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     }
 
-
+*/
   /*  @Override
     public void onClick(View view) {
         if(view.getId()==R.id.setname_button){
@@ -94,13 +110,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
 
 
-   /* @Override
+    @Override
     public void onAttach(Context context){
         super.onAttach(context);
         if(context instanceof FragmentNameListener){
             listener = (FragmentNameListener) context;
         }else {throw new RuntimeException(context.toString() +
-                "implement FragmentAListener");}
+                "implement FragmentNameListener");}
     }
 
     @Override
@@ -109,7 +125,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         listener = null;
     }
 
-*/
+
 
 
 

@@ -20,7 +20,7 @@ import android.widget.Toast;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StopWatchFragment extends Fragment implements View.OnClickListener, SettingsFragment.FragmentNameListener{
+public class StopWatchFragment extends Fragment implements View.OnClickListener{
     boolean running = false;
     TextView textView;
 
@@ -186,11 +186,11 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         //transactionSet.remove(settingsFragment);
     }
 
-
+/*
     @Override
     public void onInputNameSent(String input) {
         Toast.makeText(getContext(), "setname_button2", Toast.LENGTH_SHORT).show();
         textView.setText(input);
-    }
+    }*/
 }
 

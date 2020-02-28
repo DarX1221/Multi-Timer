@@ -3,14 +3,18 @@ package com.example.multitimer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class StopWatchActivity extends AppCompatActivity  {
+public class StopWatchActivity extends AppCompatActivity implements SettingsFragment.FragmentNameListener {
     ArrayList<StopWatchFragment> listOfSW = new ArrayList();
     private SettingsFragment settingsFragment;
+    TextView textView;
 
 
 
@@ -29,6 +33,7 @@ public class StopWatchActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
 
+        textView = (TextView) findViewById(R.id.stop_watch_name);
         settingsFragment = new SettingsFragment();
 
         StopWatchFragment stopWatchFragment = new StopWatchFragment();
@@ -46,6 +51,12 @@ public class StopWatchActivity extends AppCompatActivity  {
         fragmentTransaction2.add(R.id.stopwatch_fragment, listOfSW.get(lengthOfList-1));
         fragmentTransaction2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction2.commit();
+    }
+
+
+    @Override
+    public void onInputNameSent(String input) {
+        textView.setText(input);
     }
 
 }
