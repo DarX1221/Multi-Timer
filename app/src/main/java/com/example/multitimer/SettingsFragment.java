@@ -4,12 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -19,9 +21,11 @@ import android.widget.Toast;
 public class SettingsFragment extends Fragment {
     private EditText editText;
     private Button setNameButton;
+    SettingsFragment settingsFragment;
 
     public interface FragmentNameListener {
-        void onInputNameSent(String input);
+        void onInputNameSent(String input, SettingsFragment settingsFragment);
+
     }
 
     @Override
@@ -29,13 +33,17 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
+        //settingsFragment = this.settingsFragment;
+
+
+        TextView textView ;
         editText = view.findViewById(R.id.editText);
         setNameButton = view.findViewById(R.id.setname_button);
         setNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String input = editText.getText().toString();
-                listener.onInputNameSent(input);
+                listener.onInputNameSent(input, settingsFragment);
             }
         });
         return view;
@@ -45,26 +53,28 @@ public class SettingsFragment extends Fragment {
 
     private FragmentNameListener listener = new FragmentNameListener() {
         @Override
-        public void onInputNameSent(String input) {
+        public void onInputNameSent(String input, SettingsFragment settingsFragment) {
             Toast.makeText(getContext(), "setname_button", Toast.LENGTH_SHORT).show();
             String name = editText.getText().toString();
-            listener.onInputNameSent(name);
+            listener.onInputNameSent(name, settingsFragment);
         }
     };
+
 
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
+
         if(context instanceof FragmentNameListener){
             listener = (FragmentNameListener) context;
         }else {throw new RuntimeException(context.toString() +
                 "implement FragmentNameListener");}
     }
-/*
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
 
-    }*/
+    }
 
     @Override
     public void onDetach(){

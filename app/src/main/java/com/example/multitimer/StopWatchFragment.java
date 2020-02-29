@@ -135,8 +135,12 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
 
     boolean showSettings = true;
 
+    SettingsFragment settingsFragment;
+    public void setSettingFragment(SettingsFragment settingFragment){
+        this.settingsFragment = settingFragment;
+    }
     public void openSettingFragment(View view){
-        SettingsFragment settingsFragment = new SettingsFragment();
+
         FragmentTransaction transactionSet = getChildFragmentManager().beginTransaction();
         transactionSet.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transactionSet.replace(R.id.settings_container, settingsFragment);
@@ -159,6 +163,13 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         savedInstanceState.putLong("clockStop", clockStop);
         savedInstanceState.putString("nameTimer", textView.getText().toString());
         savedInstanceState.putInt("seconds", seconds);
+
+    }
+
+
+
+    public void setName(String name){
+        textView.setText(name);
 
     }
 }
