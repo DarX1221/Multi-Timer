@@ -17,17 +17,16 @@ import android.widget.TextView;
 public class StopWatchFragment extends Fragment implements View.OnClickListener{
     boolean running = false;
     TextView textView;
+    TextView stopWatchValue;
+
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(savedInstanceState != null){
-            running = savedInstanceState.getBoolean("runningTimer");
-            clockSum = savedInstanceState.getLong("clockSum");
-            clockStart = savedInstanceState.getLong("clockStart");
-            clockStop = savedInstanceState.getLong("clockStop");
-            seconds = savedInstanceState.getInt("seconds");
-        }
+
         View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
         textView = view.findViewById(R.id.stop_watch_name);
         Button startButton = (Button) view.findViewById(R.id.start_button);
@@ -38,7 +37,20 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         resetButton.setOnClickListener(this);
         Button setButton = (Button) view.findViewById(R.id.setting_button);
         setButton.setOnClickListener(this);
+        stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
         runTimer(view);
+
+        if(savedInstanceState != null){
+            running = savedInstanceState.getBoolean("runningTimer");
+            clockSum = savedInstanceState.getLong("clockSum");
+            clockStart = savedInstanceState.getLong("clockStart");
+            clockStop = savedInstanceState.getLong("clockStop");
+            seconds = savedInstanceState.getInt("seconds");
+
+            stopWatchValue.setText(secondsToTime(seconds));
+        }
+
+
         return view;
     }
 
@@ -66,9 +78,8 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     long clockStart = System.currentTimeMillis();
 
     public void runTimer(final View view) {
-        final TextView stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
-        final Handler handler = new Handler();
 
+        final Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -76,23 +87,27 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
                 if (running) {
                     clockNow = System.currentTimeMillis();
                     seconds = (int) ((clockNow - clockStart + clockSum) / 1000);
-
-                    int hours = seconds / 3600;
-                    int minutes = (seconds % 3600) / 60;
-                    int secs = seconds % 60;
-                    stopWatchTime = String.format("%02d:%02d:%02d", hours, minutes, secs);
-
+                    secondsToTime(seconds);
                     stopWatchValue.setText(stopWatchTime);
 
                 }
                 handler.postDelayed(this, 100);
-                if (seconds == 0) {
-                    stopWatchValue.setText("00:00:00");
-                }
             }
 
         });
     }
+
+
+
+    String secondsToTime(int seconds2){
+        int seconds = seconds2;
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+        int secs = seconds % 60;
+        stopWatchTime = String.format("%02d:%02d:%02d", hours, minutes, secs);
+        return stopWatchTime;
+    }
+
 
 
     public void startChronometer(View view) {
@@ -114,6 +129,8 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         running = false;
         clockSum = 0;
         seconds = 0;
+        stopWatchTime = "00:00:00";
+        stopWatchValue.setText(stopWatchTime);
     }
 
     boolean showSettings = true;
