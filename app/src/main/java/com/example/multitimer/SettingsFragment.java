@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +24,10 @@ public class SettingsFragment extends Fragment {
     private Button setNameButton;
     SettingsFragment settingsFragment;
 
-    public interface FragmentNameListener {
-        void onInputNameSent(String input, SettingsFragment settingsFragment);
 
+
+    public interface FragmentNameListener {
+        void onInputNameSent(String input, int id);
     }
 
     @Override
@@ -43,7 +45,9 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String input = editText.getText().toString();
-                listener.onInputNameSent(input, settingsFragment);
+                //settingsFragment = setSetter(settingsFragment);
+
+                listener.onInputNameSent(input, getID());
             }
         });
         return view;
@@ -53,10 +57,11 @@ public class SettingsFragment extends Fragment {
 
     private FragmentNameListener listener = new FragmentNameListener() {
         @Override
-        public void onInputNameSent(String input, SettingsFragment settingsFragment) {
-            Toast.makeText(getContext(), "setname_button", Toast.LENGTH_SHORT).show();
+        public void onInputNameSent(String input, int id) {
+            //Toast.makeText(getContext(), "setname_button", Toast.LENGTH_SHORT).show();
+
             String name = editText.getText().toString();
-            listener.onInputNameSent(name, settingsFragment);
+            listener.onInputNameSent(name, id);
         }
     };
 
@@ -81,4 +86,13 @@ public class SettingsFragment extends Fragment {
         super.onDetach();
         listener = null;
     }
+
+    int idSet;
+    void setID(int id){
+        idSet = id;
+    }
+    public int getID(){
+        return idSet;
+    }
+
 }

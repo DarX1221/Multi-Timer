@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 public class StopWatchFragment extends Fragment implements View.OnClickListener{
@@ -40,6 +40,9 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
         runTimer(view);
 
+        String igS = String.valueOf(idSW);
+        Toast.makeText(getContext(),igS, Toast.LENGTH_SHORT).show();
+
         if(savedInstanceState != null){
             running = savedInstanceState.getBoolean("runningTimer");
             clockSum = savedInstanceState.getLong("clockSum");
@@ -67,7 +70,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
                 resetChronometer(view);
                 break;
             case R.id.setting_button:
-                openSettingFragment(view);
+                openSettingFragment(view, this);
                 break;
         }
     }
@@ -136,23 +139,38 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     boolean showSettings = true;
 
     SettingsFragment settingsFragment;
-    public void setSettingFragment(SettingsFragment settingFragment){
+   /* public void setSettingFragment(SettingsFragment settingFragment){
         this.settingsFragment = settingFragment;
-    }
-    public void openSettingFragment(View view){
+    }*/
 
-        FragmentTransaction transactionSet = getChildFragmentManager().beginTransaction();
+    public void openSettingFragment(View view, StopWatchFragment stopWatchFragment){
+
+        int idBuffor = stopWatchFragment.getID();
+
+
+        FragmentTransaction transactionSet = stopWatchFragment.getChildFragmentManager().beginTransaction();
         transactionSet.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        // setingsfrag null
+        //StopWatchActivity stopWatchActivity = new StopWatchActivity();
+        //doesnt work beacuse in new Activity size of map and list is equal 0
+
+        settingsFragment = new SettingsFragment();
+        settingsFragment.setID(idBuffor);
+
+//sdasd
         transactionSet.replace(R.id.settings_container, settingsFragment);
-        if(showSettings){
+        if(stopWatchFragment.showSettings){
             transactionSet.replace(R.id.settings_container, settingsFragment);
-            showSettings = false;}
+            stopWatchFragment.showSettings = false;}
         else{
             transactionSet.remove(settingsFragment);
-            showSettings=true; }
+            stopWatchFragment.showSettings=true; }
         //transactionSet.addToBackStack(null);
         transactionSet.commit();
     }
+
+
+
 
 
     @Override
@@ -171,6 +189,15 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     public void setName(String name){
         textView.setText(name);
 
+    }
+
+    int idSW;
+    public void setID(int id){
+        idSW = id;
+    }
+
+    public int getID(){
+        return idSW;
     }
 }
 
