@@ -2,11 +2,18 @@ package com.example.multitimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,9 +28,11 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
 
-        if(savedInstanceState != null){
+        //loadData();
 
-        }
+        /*if(savedInstanceState != null){
+
+        }*/
         //addSW();
     }
 
@@ -80,8 +89,29 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        //saveData();
 
         //savedInstanceState.putLi
+    }
+    private void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(listOfSW);
+        editor.putString("listJS", json);
+        editor.apply();
+    }
+
+    private void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("listJS", null);
+        Type type = new TypeToken<ArrayList<SettingsFragment>>() {}.getType();
+        listOfSW = gson.fromJson(json, type);
+
+        if(listOfSW == null) {
+            listOfSW = new ArrayList<>();
+        }
     }
 
 
