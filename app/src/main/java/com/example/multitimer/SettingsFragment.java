@@ -24,8 +24,6 @@ public class SettingsFragment extends Fragment {
     private Button setNameButton;
     SettingsFragment settingsFragment;
 
-
-
     public interface FragmentNameListener {
         void onInputNameSent(String input, int id);
     }
@@ -35,36 +33,25 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        String idS = String.valueOf(getID());
-        Toast.makeText(getContext(),idS, Toast.LENGTH_SHORT).show();
-
-        TextView textView ;
         editText = view.findViewById(R.id.editText);
         setNameButton = view.findViewById(R.id.setname_button);
         setNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String input = editText.getText().toString();
-                //settingsFragment = setSetter(settingsFragment);
-
                 listener.onInputNameSent(input, getID());
             }
         });
         return view;
     }
 
-
-
     private FragmentNameListener listener = new FragmentNameListener() {
         @Override
         public void onInputNameSent(String input, int id) {
-            //Toast.makeText(getContext(), "setname_button", Toast.LENGTH_SHORT).show();
-
             String name = editText.getText().toString();
             listener.onInputNameSent(name, id);
         }
     };
-
 
     @Override
     public void onAttach(Context context){
@@ -76,6 +63,7 @@ public class SettingsFragment extends Fragment {
                 "implement FragmentNameListener");}
     }
 
+    // Saver
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
 
@@ -94,5 +82,4 @@ public class SettingsFragment extends Fragment {
     public int getID(){
         return idSet;
     }
-
 }

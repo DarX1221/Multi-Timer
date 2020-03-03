@@ -18,15 +18,11 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     boolean running = false;
     TextView textView;
     TextView stopWatchValue;
-
-
-
-
+    String nameTimer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Utworzenie wszystkich potrzebnych View
         View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
         textView = view.findViewById(R.id.stop_watch_name);
@@ -43,10 +39,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         //Uruchomienie funkcji Timer dla tego(this) fragmentu
         runTimer(view);
 
-        //TEST Wyświetlenie id
-        String igS = String.valueOf(idSW);
-        Toast.makeText(getContext(),igS, Toast.LENGTH_SHORT).show();
-
+        //Odwołanie do aktywności, umożliwia przechwycenie adresu pierwszego fragmentu
         StopWatchActivity stopWatchActivity = (StopWatchActivity) getActivity();
         stopWatchActivity.setFragment(this);
 
@@ -57,11 +50,11 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
             clockStart = savedInstanceState.getLong("clockStart");
             clockStop = savedInstanceState.getLong("clockStop");
             seconds = savedInstanceState.getInt("seconds");
+            nameTimer = savedInstanceState.getString("nameTimer");
+            setName(nameTimer);
 
             stopWatchValue.setText(secondsToTime(seconds));
         }
-
-
         return view;
     }
 
@@ -87,7 +80,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     int seconds;
     long clockNow, clockStop, clockSum;
     long clockStart = System.currentTimeMillis();
-
     public void runTimer(final View view) {
 
         final Handler handler = new Handler();
@@ -108,8 +100,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         });
     }
 
-
-
     String secondsToTime(int seconds2){
         int seconds = seconds2;
         int hours = seconds / 3600;
@@ -119,15 +109,12 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         return stopWatchTime;
     }
 
-
-
     public void startChronometer(View view) {
         if (!running) {
             running = true;
             clockStart = System.currentTimeMillis();
         }
     }
-
     public void stopChronometer(View view) {
         if (running) {
             running = false;
@@ -135,7 +122,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
             clockSum = clockSum + clockStop - clockStart;
         }
     }
-
     public void resetChronometer(View view) {
         running = false;
         clockSum = 0;
@@ -145,41 +131,25 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     }
 
     boolean showSettings = true;
-
     SettingsFragment settingsFragment;
-   /* public void setSettingFragment(SettingsFragment settingFragment){
-        this.settingsFragment = settingFragment;
-    }*/
-
     public void openSettingFragment(View view, StopWatchFragment stopWatchFragment){
-
         int idBuffor = stopWatchFragment.getID();
-
 
         FragmentTransaction transactionSet = stopWatchFragment.getChildFragmentManager().beginTransaction();
         transactionSet.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        // setingsfrag null
-        //StopWatchActivity stopWatchActivity = new StopWatchActivity();
-        //doesnt work beacuse in new Activity size of map and list is equal 0
-
         settingsFragment = new SettingsFragment();
         settingsFragment.setID(idBuffor);
-
-//sdasd
         transactionSet.replace(R.id.settings_container, settingsFragment);
+
         if(stopWatchFragment.showSettings){
             transactionSet.replace(R.id.settings_container, settingsFragment);
             stopWatchFragment.showSettings = false;}
         else{
             transactionSet.remove(settingsFragment);
             stopWatchFragment.showSettings=true; }
-        //transactionSet.addToBackStack(null);
+
         transactionSet.commit();
     }
-
-
-
-
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
@@ -189,26 +159,22 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         savedInstanceState.putLong("clockStop", clockStop);
         savedInstanceState.putString("nameTimer", textView.getText().toString());
         savedInstanceState.putInt("seconds", seconds);
+        savedInstanceState.putString("nameTimer", nameTimer);
 
     }
 
 
 
     public void setName(String name){
-        textView.setText(name);
-    }
-
+        nameTimer = name;
+        textView.setText(name);}
     int idSW;
     public void setID(int id){
         idSW = id;
     }
-
     public int getID(){
         return idSW;
     }
-
-
-
 
 }
 
