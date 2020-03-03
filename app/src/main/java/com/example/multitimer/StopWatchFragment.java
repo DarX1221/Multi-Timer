@@ -27,6 +27,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // Utworzenie wszystkich potrzebnych View
         View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
         textView = view.findViewById(R.id.stop_watch_name);
         Button startButton = (Button) view.findViewById(R.id.start_button);
@@ -38,11 +39,18 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         Button setButton = (Button) view.findViewById(R.id.setting_button);
         setButton.setOnClickListener(this);
         stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
+
+        //Uruchomienie funkcji Timer dla tego(this) fragmentu
         runTimer(view);
 
+        //TEST Wyświetlenie id
         String igS = String.valueOf(idSW);
         Toast.makeText(getContext(),igS, Toast.LENGTH_SHORT).show();
 
+        StopWatchActivity stopWatchActivity = (StopWatchActivity) getActivity();
+        stopWatchActivity.setFragment(this);
+
+        //Saver
         if(savedInstanceState != null){
             running = savedInstanceState.getBoolean("runningTimer");
             clockSum = savedInstanceState.getLong("clockSum");
@@ -188,7 +196,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
 
     public void setName(String name){
         textView.setText(name);
-
     }
 
     int idSW;
@@ -199,5 +206,9 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     public int getID(){
         return idSW;
     }
+
+
+
+
 }
 

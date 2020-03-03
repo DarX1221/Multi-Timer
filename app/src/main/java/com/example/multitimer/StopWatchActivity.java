@@ -3,6 +3,8 @@ package com.example.multitimer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -14,83 +16,57 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     ArrayList<StopWatchFragment> listOfSW = new ArrayList();
     Map<StopWatchFragment, SettingsFragment> mapOfSW = new LinkedHashMap<>();
     TextView textView;
-    StopWatchFragment stopWatchFragment;
-    SettingsFragment settingsFragment;
+
     int lengthOfList = listOfSW.size();
 
 
+    StopWatchFragment stopWatchFragment1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
 
+
+
+        //findViewById(R.id.stopwatch_fragment).setVisibility(View.GONE);
+        //Usuwa widoczności wszystkich fragmentów,
+
         if(savedInstanceState != null){
 
         }
-/*
-        StopWatchFragment stopWatchFragment1 = new StopWatchFragment();
-        listOfSW.add(stopWatchFragment1);
-        SettingsFragment settingsFragment1 = new SettingsFragment();
-        mapOfSW.put(settingsFragment1, stopWatchFragment1);
-
-
-        FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction1.remove(stopWatchFragment1);
-        fragmentTransaction1.replace(R.id.stop_watch_fragment, stopWatchFragment1);
-        fragmentTransaction1.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction1.commit();
-
-        stopWatchFragment1.setSettingFragment(settingsFragment1);*/
-
 
 /*
-        stopWatchFragment = new StopWatchFragment();
-        settingsFragment = new SettingsFragment();
-
-        listOfSW.add(stopWatchFragment);
-        int lengthOfList = listOfSW.size();
-        mapOfSW.put(settingsFragment, listOfSW.get(lengthOfList-1));
-        stopWatchFragment.setSettingFragment(settingsFragment);
-
-        FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction1.remove(stopWatchFragment);
-        fragmentTransaction1.replace(R.id.stopwatch_fragment, listOfSW.get(lengthOfList-1));
-        fragmentTransaction1.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction1.commit();*/
-
-
-        addSW();
-
-
-/*
-        listOfSW.add(new StopWatchFragment());
-        mapOfSW.put(new SettingsFragment(), listOfSW.get(0));
-        StopWatchFragment stopWatchFragment = (StopWatchFragment) listOfSW.get(0);
-
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.remove(stopWatchFragment);
-        fragmentTransaction.replace(R.id.stopwatch_fragment, stopWatchFragment);
+        //fragmentTransaction.remove();
+        fragmentTransaction.replace(R.id.stopwatch_fragment, null);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction.commit();*/
+        fragmentTransaction.commit();
+*/
+
+        //addSW();
+
 
     }
 
 
-
+    StopWatchFragment stopWatchFragment;
+    SettingsFragment settingsFragment;
     public void addSW(){
         stopWatchFragment = new StopWatchFragment();
         settingsFragment = new SettingsFragment();
 
+        FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
+        //fragmentTransaction1.remove(stopWatchFragment);
+
+        stopWatchFragment = new StopWatchFragment();
         listOfSW.add(stopWatchFragment);
         lengthOfList = listOfSW.size();
         stopWatchFragment.setID(lengthOfList-1);
         mapOfSW.put(listOfSW.get(lengthOfList-1), settingsFragment);
         settingsFragment.setID(lengthOfList-1);
 
-        FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction1.remove(stopWatchFragment);
-        fragmentTransaction1.replace(R.id.stopwatch_fragment, listOfSW.get(lengthOfList-1));
+
+        fragmentTransaction1.replace(R.id.stopwatch_fragment, listOfSW.get(0));
         fragmentTransaction1.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction1.commit();
     }
@@ -107,10 +83,6 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         mapOfSW.put(listOfSW.get(lengthOfList-1), settingsFragment);
         settingsFragment.setID(lengthOfList-1);
 
-
-
-        //listOfSW.add(new StopWatchFragment());
-        //int lengthOfList = listOfSW.size();
         FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
         fragmentTransaction2.add(R.id.stopwatch_fragment, listOfSW.get(lengthOfList-1));
         fragmentTransaction2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -123,20 +95,15 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         nameTimer = input;
         StopWatchFragment nameChanger = listOfSW.get(id);
         nameChanger.setName(input);
-
-        //textView = (TextView) findViewById(R.id.stop_watch_name);
-        //textView.setText(input);
     }
 
-    public SettingsFragment getSettingsFragment(int id){
-        SettingsFragment settingsFragmentBuf = new SettingsFragment();
-                settingsFragmentBuf = mapOfSW.get(listOfSW.get(0));
-        int cos = 3;
-        return settingsFragmentBuf;
+
+    public  void setFragment(StopWatchFragment stopWatchFragment){
+        if(listOfSW.size() == 0){
+            listOfSW.add(stopWatchFragment);
+        }
     }
-    public StopWatchActivity getSW(){
-        return this;
-    }
+
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {

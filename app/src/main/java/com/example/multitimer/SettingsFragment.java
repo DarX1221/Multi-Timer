@@ -35,8 +35,8 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        //settingsFragment = this.settingsFragment;
-
+        String idS = String.valueOf(getID());
+        Toast.makeText(getContext(),idS, Toast.LENGTH_SHORT).show();
 
         TextView textView ;
         editText = view.findViewById(R.id.editText);
