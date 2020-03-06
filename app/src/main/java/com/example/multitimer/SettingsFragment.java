@@ -19,13 +19,24 @@ import android.widget.Toast;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements View.OnClickListener{
     private EditText editText;
-    private Button setNameButton;
+    private Button setNameButton, deleteButton;
     SettingsFragment settingsFragment;
+
+    @Override
+    public void onClick(View v) {
+
+        if(v.getId() == R.id.delete_button){
+            Toast.makeText(getContext(), "Delete", Toast.LENGTH_SHORT).show();
+            StopWatchFragment swF = (StopWatchFragment) getParentFragment();
+            swF.deleteStopWatch();
+        }
+    }
 
     public interface FragmentNameListener {
         void onInputNameSent(String input, int id);
+
     }
 
     @Override
@@ -42,6 +53,7 @@ public class SettingsFragment extends Fragment {
                 listener.onInputNameSent(input, getID());
             }
         });
+
         return view;
     }
 
@@ -52,6 +64,8 @@ public class SettingsFragment extends Fragment {
             listener.onInputNameSent(name, id);
         }
     };
+
+
 
     @Override
     public void onAttach(Context context){
@@ -82,4 +96,9 @@ public class SettingsFragment extends Fragment {
     public int getID(){
         return idSet;
     }
+
+    void deleteStopWatch(){
+
+    }
+
 }

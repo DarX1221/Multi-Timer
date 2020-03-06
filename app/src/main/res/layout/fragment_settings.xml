@@ -25,10 +25,16 @@
         android:id="@+id/setname_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set Name"
-        android:onClick="setName" />
+        android:text="Set Name" />
 
 </LinearLayout>
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:layout_gravity="center_horizontal"/>
 
 
 </LinearLayout>

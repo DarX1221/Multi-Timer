@@ -16,9 +16,10 @@ import android.widget.Toast;
 
 public class StopWatchFragment extends Fragment implements View.OnClickListener{
     boolean running = false;
+    String nameTimer = "Name Timer";
     TextView textView;
     TextView stopWatchValue;
-    String nameTimer;
+    StopWatchActivity stopWatchActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,26 +36,27 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         Button setButton = (Button) view.findViewById(R.id.setting_button);
         setButton.setOnClickListener(this);
         stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
+        textView.setText(nameTimer);
 
         //Uruchomienie funkcji Timer dla tego(this) fragmentu
         runTimer(view);
 
         //Odwołanie do aktywności, umożliwia przechwycenie adresu pierwszego fragmentu
-        StopWatchActivity stopWatchActivity = (StopWatchActivity) getActivity();
+        stopWatchActivity = (StopWatchActivity) getActivity();
         stopWatchActivity.setFragment(this);
 
         //Saver
-        if(savedInstanceState != null){
+        /*if(savedInstanceState != null){
             running = savedInstanceState.getBoolean("runningTimer");
             clockSum = savedInstanceState.getLong("clockSum");
             clockStart = savedInstanceState.getLong("clockStart");
-            clockStop = savedInstanceState.getLong("clockStop");
-            seconds = savedInstanceState.getInt("seconds");
+            //clockStop = savedInstanceState.getLong("clockStop");
+            //seconds = savedInstanceState.getInt("seconds");
             nameTimer = savedInstanceState.getString("nameTimer");
             setName(nameTimer);
 
             stopWatchValue.setText(secondsToTime(seconds));
-        }
+        }*/
         return view;
     }
 
@@ -78,7 +80,8 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
 
     String stopWatchTime;
     int seconds;
-    long clockNow, clockStop, clockSum;
+    long clockNow, clockStop;
+    long clockSum = 0L;
     long clockStart = System.currentTimeMillis();
     public void runTimer(final View view) {
 
@@ -151,7 +154,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         transactionSet.commit();
     }
 
-    @Override
+    /*@Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         savedInstanceState.putBoolean("runningTimer", running);
         savedInstanceState.putLong("clockSum", clockSum);
@@ -161,7 +164,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         savedInstanceState.putInt("seconds", seconds);
         savedInstanceState.putString("nameTimer", nameTimer);
 
-    }
+    }*/
 
 
 
@@ -174,6 +177,15 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     }
     public int getID(){
         return idSW;
+    }
+
+    public StopWatchActivity getStopWatchActivity() {
+        return stopWatchActivity;
+    }
+
+    public void deleteStopWatch(){
+        Toast.makeText(getContext(), "Delete", Toast.LENGTH_SHORT).show();
+        setName("Delete");
     }
 
 }
