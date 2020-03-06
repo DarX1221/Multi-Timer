@@ -172,20 +172,18 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         nameTimer = name;
         textView.setText(name);}
     int idSW;
-    public void setID(int id){
-        idSW = id;
-    }
-    public int getID(){
-        return idSW;
-    }
+    public void setID(int id){   idSW = id;}
+    public int getID(){     return idSW; }
 
     public StopWatchActivity getStopWatchActivity() {
         return stopWatchActivity;
     }
 
     public void deleteStopWatch(){
-        Toast.makeText(getContext(), "Delete", Toast.LENGTH_SHORT).show();
-        setName("Delete");
+        Toast.makeText(getContext(), "Delete in StopWatchFragment", Toast.LENGTH_SHORT).show();
+        StopWatchActivity swAct = getStopWatchActivity();
+        swAct.deleteTimer(getID(), this);
+        //setName("Delete");
     }
 
 }

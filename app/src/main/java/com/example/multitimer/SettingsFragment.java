@@ -19,24 +19,16 @@ import android.widget.Toast;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends Fragment implements View.OnClickListener{
+public class SettingsFragment extends Fragment {
     private EditText editText;
     private Button setNameButton, deleteButton;
-    SettingsFragment settingsFragment;
+    //SettingsFragment settingsFragment;
 
-    @Override
-    public void onClick(View v) {
-
-        if(v.getId() == R.id.delete_button){
-            Toast.makeText(getContext(), "Delete", Toast.LENGTH_SHORT).show();
-            StopWatchFragment swF = (StopWatchFragment) getParentFragment();
-            swF.deleteStopWatch();
-        }
-    }
 
     public interface FragmentNameListener {
         void onInputNameSent(String input, int id);
-
+        //TEST
+        void deleteSW();
     }
 
     @Override
@@ -54,6 +46,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener{
             }
         });
 
+        //TEST
+        deleteButton = view.findViewById(R.id.delete_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getContext(), "Delete onClick", Toast.LENGTH_SHORT).show();
+                deleteStopWatch();
+            }
+        });
+
         return view;
     }
 
@@ -62,6 +64,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener{
         public void onInputNameSent(String input, int id) {
             String name = editText.getText().toString();
             listener.onInputNameSent(name, id);
+        }
+
+        //TEST
+        @Override
+        public void deleteSW() {
+            Toast.makeText(getContext(), "Delete SF SW", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -98,7 +106,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener{
     }
 
     void deleteStopWatch(){
-
+        StopWatchFragment swF = (StopWatchFragment) getParentFragment();
+        swF.deleteStopWatch();
     }
 
 }

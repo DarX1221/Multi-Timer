@@ -62,19 +62,22 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         fragmentTransaction2.commit();
     }
 
-    public void deleteTimer (StopWatchFragment stopWatchFragment) {
+    public void deleteTimer (int id, StopWatchFragment stopWatchFragment) {
+        FragmentTransaction fragmentTransaction3 = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction3.remove(stopWatchFragment);
+        StopWatchFragment swF;
+        swF = listOfSW.get(id);
+        swF.running = false;
         listOfSW.remove(stopWatchFragment);
-        stopWatchFragment = new StopWatchFragment();
-        settingsFragment = new SettingsFragment();
-        listOfSW.add(stopWatchFragment);
         lengthOfList = listOfSW.size();
-        stopWatchFragment.setID(lengthOfList - 1);
-        settingsFragment.setID(lengthOfList - 1);
 
-        FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction2.add(R.id.stopwatch_fragment, listOfSW.get(lengthOfList - 1));
-        fragmentTransaction2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction2.commit();
+
+        for (int i = 0; i < lengthOfList; i++){
+            swF = listOfSW.get(i);
+            swF.setID(i);
+        }
+        fragmentTransaction3.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction3.commit();
     }
 
 
@@ -86,6 +89,9 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         StopWatchFragment nameChanger = listOfSW.get(id);
         nameChanger.setName(input);
     }
+    //Test
+    @Override
+    public void deleteSW(){Toast.makeText(this, "Delete SWAct", Toast.LENGTH_SHORT).show();}
 
 
     // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML

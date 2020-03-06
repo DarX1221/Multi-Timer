@@ -11,7 +11,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        stopWatchActivityStart();
+
+    }
+
+    void stopWatchActivityStart(){
         Intent intent = new Intent(this, StopWatchActivity.class);
         startActivity(intent);
     }
+
+    public MainActivity getMainActivity(){
+        return this;
+    }
 }
+
