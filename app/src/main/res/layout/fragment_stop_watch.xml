@@ -10,7 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#7A7A7A">
+        android:background="@color/StopWatchFragmentColor">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                 android:id="@+id/setting_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="S" />
+                android:text="@string/set_button" />
 
 
 
@@ -76,7 +76,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#7A7A7A"
+                android:background="@color/SettingsFragmentColor"
                 android:id="@+id/settings_container"/>
 
 

@@ -25,7 +25,7 @@
         android:id="@+id/setname_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set Name" />
+        android:text="@string/set_name_button" />
 
 </LinearLayout>
 
@@ -33,7 +33,7 @@
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
+        android:text="@string/delete_button"
         android:layout_gravity="center_horizontal"/>
 
 

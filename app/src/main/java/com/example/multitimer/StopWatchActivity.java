@@ -64,20 +64,36 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
     public void deleteTimer (int id, StopWatchFragment stopWatchFragment) {
         FragmentTransaction fragmentTransaction3 = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction3.remove(stopWatchFragment);
         StopWatchFragment swF;
-        swF = listOfSW.get(id);
-        swF.running = false;
-        listOfSW.remove(stopWatchFragment);
-        lengthOfList = listOfSW.size();
+        if((listOfSW.size()>1)) {
+            if ((id == 0) && (listOfSW.size() > 1)) {
+                int size = listOfSW.size();
+                for (int i = 0; i < size - 1; i++) {
+                    setSWFragment(i + 1, i);
+                    listOfSW.get(i).setChronometer();
+                }
+                swF = listOfSW.get(size - 1);
+                swF.running = false;
+                fragmentTransaction3.remove(swF);
+                listOfSW.remove(swF);
+
+            } else {  // Usunięcie Fragmentu Stopera (id!=0)
+                fragmentTransaction3.remove(stopWatchFragment);
+
+                swF = listOfSW.get(id);
+                swF.running = false;
+                listOfSW.remove(stopWatchFragment);
+                lengthOfList = listOfSW.size();
 
 
-        for (int i = 0; i < lengthOfList; i++){
-            swF = listOfSW.get(i);
-            swF.setID(i);
+                for (int i = 0; i < lengthOfList; i++) { //zamiana id Fragment'ów
+                    swF = listOfSW.get(i);
+                    swF.setID(i);
+                }
+            }
+            fragmentTransaction3.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            fragmentTransaction3.commit();
         }
-        fragmentTransaction3.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction3.commit();
     }
 
 
@@ -105,24 +121,15 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     @Override
     protected void onStart(){
         super.onStart();
-        Toast.makeText(this, "Load onResume", Toast.LENGTH_SHORT).show();
         loadData();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        Toast.makeText(this, "Save onPause", Toast.LENGTH_SHORT).show();
         saveData();
     }
 
-
-
-
-    /*@Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-    }*/
 
     void saveData(){
         ArrayList<String> listOfNames = new ArrayList<>();
@@ -208,6 +215,20 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         }
 
         }
+    }
+
+    // Funkcja umożliwiająca przeniesienie parametrów Stopera(Fragment'u)
+    void setSWFragment(int fromID, int toID){
+        StopWatchFragment swBuf1, swBuf2;
+        swBuf1 = listOfSW.get(fromID);
+        swBuf2 = listOfSW.get(toID);
+
+        String name = swBuf1.nameTimer;
+        swBuf2.setName(name);
+
+        swBuf2.running = swBuf1.running;
+        swBuf2.clockStart = swBuf1.clockStart;
+        swBuf2.clockSum = swBuf1.clockSum;
     }
 }
 

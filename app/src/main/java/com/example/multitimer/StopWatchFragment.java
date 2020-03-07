@@ -132,6 +132,11 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         stopWatchTime = "00:00:00";
         stopWatchValue.setText(stopWatchTime);
     }
+    public void setChronometer(){
+        int secondsBuf = (int)clockSum / 1000;
+        String time = secondsToTime(secondsBuf);
+        stopWatchValue.setText(stopWatchTime);
+    }
 
     boolean showSettings = true;
     SettingsFragment settingsFragment;

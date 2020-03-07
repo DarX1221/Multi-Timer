@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">Multi Timer</string>
     <string name="sart_button">Start</string>
-    <string name="stop_button">Stop</string>
+    <string name="stop_button">Pause</string>
     <string name="reset_button">Reset</string>
-    <string name="name"></string>
+    <string name="set_button">Settings</string>
+
+    <string name="set_name_button">Set Name</string>
+    <string name="delete_button">Delete</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

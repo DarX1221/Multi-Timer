@@ -22,7 +22,6 @@ import android.widget.Toast;
 public class SettingsFragment extends Fragment {
     private EditText editText;
     private Button setNameButton, deleteButton;
-    //SettingsFragment settingsFragment;
 
 
     public interface FragmentNameListener {
