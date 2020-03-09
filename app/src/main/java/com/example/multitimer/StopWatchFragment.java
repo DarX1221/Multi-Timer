@@ -45,18 +45,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         stopWatchActivity = (StopWatchActivity) getActivity();
         stopWatchActivity.setFragment(this);
 
-        //Saver
-        /*if(savedInstanceState != null){
-            running = savedInstanceState.getBoolean("runningTimer");
-            clockSum = savedInstanceState.getLong("clockSum");
-            clockStart = savedInstanceState.getLong("clockStart");
-            //clockStop = savedInstanceState.getLong("clockStop");
-            //seconds = savedInstanceState.getInt("seconds");
-            nameTimer = savedInstanceState.getString("nameTimer");
-            setName(nameTimer);
-
-            stopWatchValue.setText(secondsToTime(seconds));
-        }*/
         return view;
     }
 
@@ -159,23 +147,14 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         transactionSet.commit();
     }
 
-    /*@Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
-        savedInstanceState.putBoolean("runningTimer", running);
-        savedInstanceState.putLong("clockSum", clockSum);
-        savedInstanceState.putLong("clockStart", clockStart);
-        savedInstanceState.putLong("clockStop", clockStop);
-        savedInstanceState.putString("nameTimer", textView.getText().toString());
-        savedInstanceState.putInt("seconds", seconds);
-        savedInstanceState.putString("nameTimer", nameTimer);
-
-    }*/
-
 
 
     public void setName(String name){
         nameTimer = name;
-        textView.setText(name);}
+        textView.setText(name);
+        StopWatchActivity sAct = getStopWatchActivity();
+        sAct.saveData();}
+
     int idSW;
     public void setID(int id){   idSW = id;}
     public int getID(){     return idSW; }
@@ -185,10 +164,9 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     }
 
     public void deleteStopWatch(){
-        Toast.makeText(getContext(), "Delete in StopWatchFragment", Toast.LENGTH_SHORT).show();
         StopWatchActivity swAct = getStopWatchActivity();
         swAct.deleteTimer(getID(), this);
-        //setName("Delete");
+
     }
 
 }

@@ -4,15 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -26,8 +23,7 @@ public class SettingsFragment extends Fragment {
 
     public interface FragmentNameListener {
         void onInputNameSent(String input, int id);
-        //TEST
-        void deleteSW();
+
     }
 
     @Override
@@ -50,7 +46,6 @@ public class SettingsFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getContext(), "Delete onClick", Toast.LENGTH_SHORT).show();
                 deleteStopWatch();
             }
         });
@@ -65,11 +60,7 @@ public class SettingsFragment extends Fragment {
             listener.onInputNameSent(name, id);
         }
 
-        //TEST
-        @Override
-        public void deleteSW() {
-            Toast.makeText(getContext(), "Delete SF SW", Toast.LENGTH_SHORT).show();
-        }
+
     };
 
 

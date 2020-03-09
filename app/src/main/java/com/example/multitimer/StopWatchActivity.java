@@ -66,7 +66,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         FragmentTransaction fragmentTransaction3 = getSupportFragmentManager().beginTransaction();
         StopWatchFragment swF;
         if((listOfSW.size()>1)) {
-            if ((id == 0) && (listOfSW.size() > 1)) {
+            if (id == 0) {
                 int size = listOfSW.size();
                 for (int i = 0; i < size - 1; i++) {
                     setSWFragment(i + 1, i);
@@ -74,15 +74,15 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                 }
                 swF = listOfSW.get(size - 1);
                 swF.running = false;
-                fragmentTransaction3.remove(swF);
                 listOfSW.remove(swF);
+                fragmentTransaction3.remove(swF);
 
             } else {  // Usunięcie Fragmentu Stopera (id!=0)
                 fragmentTransaction3.remove(stopWatchFragment);
 
                 swF = listOfSW.get(id);
                 swF.running = false;
-                listOfSW.remove(stopWatchFragment);
+                listOfSW.remove(id);
                 lengthOfList = listOfSW.size();
 
 
@@ -106,8 +106,6 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         nameChanger.setName(input);
     }
     //Test
-    @Override
-    public void deleteSW(){Toast.makeText(this, "Delete SWAct", Toast.LENGTH_SHORT).show();}
 
 
     // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML
@@ -134,11 +132,12 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     void saveData(){
         ArrayList<String> listOfNames = new ArrayList<>();
         ArrayList<Boolean> listOfBooleans = new ArrayList<>();
-        long[] clockSumTab = new long[lengthOfList];
-        long[] clockStartTab = new long[lengthOfList];
-        int amountOfTimers = lengthOfList;
+        int amountOfTimers = listOfSW.size();
+        long[] clockSumTab = new long[amountOfTimers];
+        long[] clockStartTab = new long[amountOfTimers];
+
         StopWatchFragment sw;
-        for (int i = 0; i < lengthOfList; i++) {
+        for (int i = 0; i < amountOfTimers; i++) {
             sw = listOfSW.get(i);
 
             String nameT = sw.nameTimer;
