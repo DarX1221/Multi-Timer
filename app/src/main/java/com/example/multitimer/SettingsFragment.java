@@ -46,7 +46,7 @@ public class SettingsFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteStopWatch();
+                deleteFragment();
             }
         });
 
@@ -95,9 +95,20 @@ public class SettingsFragment extends Fragment {
         return idSet;
     }
 
-    void deleteStopWatch(){
-        StopWatchFragment swF = (StopWatchFragment) getParentFragment();
-        swF.deleteStopWatch();
+    //Switch type, Stopwatch = true, Timer = False
+    Boolean type;
+    void setType(Boolean type){this.type = type;}
+    Boolean getType(){return type;}
+
+    void deleteFragment(){
+        if(type) {
+            StopWatchFragment swF = (StopWatchFragment) getParentFragment();
+            swF.deleteStopWatch();
+        }
+        else {
+            TimerFragment timF = (TimerFragment) getParentFragment();
+            timF.deleteTimer();
+        }
     }
 
 }

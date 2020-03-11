@@ -14,59 +14,73 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class StopWatchFragment extends Fragment implements View.OnClickListener{
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class TimerFragment extends Fragment
+        implements View.OnClickListener{
     boolean running = false;
     String nameTimer = "Name Timer";
     TextView textView;
-    TextView stopWatchValue;
-    StopWatchActivity stopWatchActivity;
+    TextView timerValue;
+    TimerActivity timerActivity;
+
+    public TimerFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Utworzenie wszystkich potrzebnych View
-        View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
-        textView = view.findViewById(R.id.stop_watch_name);
-        Button startButton = (Button) view.findViewById(R.id.start_button);
+        View view = inflater.inflate(R.layout.fragment_timer, container, false);
+
+        textView = view.findViewById(R.id.timer_name);
+        Button startButton = (Button) view.findViewById(R.id.start_button_timer);
         startButton.setOnClickListener(this);
-        Button stopButton = (Button) view.findViewById(R.id.stop_button);
+        Button stopButton = (Button) view.findViewById(R.id.stop_button_timer);
         stopButton.setOnClickListener(this);
-        Button resetButton = (Button) view.findViewById(R.id.reset_button);
+        Button resetButton = (Button) view.findViewById(R.id.reset_button_timer);
         resetButton.setOnClickListener(this);
-        Button setButton = (Button) view.findViewById(R.id.setting_button);
+        Button setButton = (Button) view.findViewById(R.id.setting_button_timer);
         setButton.setOnClickListener(this);
-        stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
+        timerValue = (TextView) view.findViewById(R.id.timer_text2);
         textView.setText(nameTimer);
 
         //Uruchomienie funkcji Timer dla tego(this) fragmentu
         runTimer(view);
 
         //Odwołanie do aktywności, umożliwia przechwycenie adresu pierwszego fragmentu
-        stopWatchActivity = (StopWatchActivity) getActivity();
-        stopWatchActivity.setFragment(this);
+        timerActivity = (TimerActivity) getActivity();
+        timerActivity.setFragment(this);
+
 
         return view;
     }
 
+
+
+
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.start_button:
+            case R.id.start_button_timer:
                 startChronometer(view);
                 break;
-            case R.id.stop_button:
+            case R.id.stop_button_timer:
                 stopChronometer(view);
                 break;
-            case R.id.reset_button:
+            case R.id.reset_button_timer:
                 resetChronometer(view);
                 break;
-            case R.id.setting_button:
+            case R.id.setting_button_timer:
                 openSettingFragment(view, this);
                 break;
         }
     }
 
-    String stopWatchTime;
+    String timerStringTime;
     int seconds;
     long clockNow, clockStop;
     long clockSum = 0L;
@@ -82,7 +96,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
                     clockNow = System.currentTimeMillis();
                     seconds = (int) ((clockNow - clockStart + clockSum) / 1000);
                     secondsToTime(seconds);
-                    stopWatchValue.setText(stopWatchTime);
+                    timerValue.setText(timerStringTime);
 
                 }
                 handler.postDelayed(this, 100);
@@ -96,8 +110,8 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         int hours = seconds / 3600;
         int minutes = (seconds % 3600) / 60;
         int secs = seconds % 60;
-        stopWatchTime = String.format("%02d:%02d:%02d", hours, minutes, secs);
-        return stopWatchTime;
+        timerStringTime = String.format("%02d:%02d:%02d", hours, minutes, secs);
+        return timerStringTime;
     }
 
     public void startChronometer(View view) {
@@ -117,58 +131,61 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         running = false;
         clockSum = 0;
         seconds = 0;
-        stopWatchTime = "00:00:00";
-        stopWatchValue.setText(stopWatchTime);
+        timerStringTime = "00:00:00";
+        timerValue.setText(timerStringTime);
     }
     public void setChronometer(){
         int secondsBuf = (int)clockSum / 1000;
         String time = secondsToTime(secondsBuf);
-        stopWatchValue.setText(stopWatchTime);
+        timerValue.setText(time);
     }
 
     boolean showSettings = true;
     SettingsFragment settingsFragment;
-    public void openSettingFragment(View view, StopWatchFragment stopWatchFragment){
-        int idBuffor = stopWatchFragment.getID();
+    public void openSettingFragment(View view, TimerFragment timerFragment){
+        int idBuffor = timerFragment.getID();
 
-        FragmentTransaction transactionSet = stopWatchFragment.getChildFragmentManager().beginTransaction();
-        transactionSet.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        FragmentTransaction transactionSetTim = timerFragment.getChildFragmentManager().beginTransaction();
+        transactionSetTim.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         settingsFragment = new SettingsFragment();
         settingsFragment.setID(idBuffor);
-        settingsFragment.setType(true);
-        transactionSet.replace(R.id.settings_container, settingsFragment);
+        settingsFragment.setType(false);
+        transactionSetTim.replace(R.id.settings_container, settingsFragment);
 
-        if(stopWatchFragment.showSettings){
-            transactionSet.replace(R.id.settings_container, settingsFragment);
-            stopWatchFragment.showSettings = false;}
+        if(timerFragment.showSettings){
+            transactionSetTim.replace(R.id.settings_container, settingsFragment);
+            timerFragment.showSettings = false;}
         else{
-            transactionSet.remove(settingsFragment);
-            stopWatchFragment.showSettings=true; }
+            transactionSetTim.remove(settingsFragment);
+            timerFragment.showSettings=true; }
 
-        transactionSet.commit();
+        transactionSetTim.commit();
     }
-
 
 
     public void setName(String name){
         nameTimer = name;
-        textView.setText(name);
-        StopWatchActivity sAct = getStopWatchActivity();
-        sAct.saveData();}
-
+        textView.setText(name);}
     int idSW;
     public void setID(int id){   idSW = id;}
     public int getID(){     return idSW; }
 
-    public StopWatchActivity getStopWatchActivity() {
-        return stopWatchActivity;
+    public TimerActivity getTimerActivity() {
+        return timerActivity;
     }
 
-    public void deleteStopWatch(){
-        StopWatchActivity swAct = getStopWatchActivity();
-        swAct.deleteTimer(getID(), this);
-
+    public void deleteTimer(){
+        //Toast.makeText(getContext(), "Delete in", Toast.LENGTH_SHORT).show();
+        TimerActivity timerAct = getTimerActivity();
+        timerAct.deleteTimer(getID(), this);
+        //setName("Delete");
     }
 
 }
+
+
+
+
+
+
 
