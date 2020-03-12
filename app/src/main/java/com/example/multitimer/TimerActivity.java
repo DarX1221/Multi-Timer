@@ -229,5 +229,6 @@ public class TimerActivity extends AppCompatActivity
             timBuf2.clockStart = timBuf1.clockStart;
             timBuf2.clockSum = timBuf1.clockSum;
         }
-    }
+
+}
 

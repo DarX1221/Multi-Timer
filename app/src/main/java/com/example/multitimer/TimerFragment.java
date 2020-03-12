@@ -45,6 +45,8 @@ public class TimerFragment extends Fragment
         Button setButton = (Button) view.findViewById(R.id.setting_button_timer);
         setButton.setOnClickListener(this);
         timerValue = (TextView) view.findViewById(R.id.timer_text2);
+        timerValue.setOnClickListener(this);
+
         textView.setText(nameTimer);
 
         //Uruchomienie funkcji Timer dla tego(this) fragmentu
@@ -76,6 +78,9 @@ public class TimerFragment extends Fragment
                 break;
             case R.id.setting_button_timer:
                 openSettingFragment(view, this);
+                break;
+            case R.id.timer_text2:
+                Toast.makeText(getContext(), "Set Timer!Fragment", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -179,6 +184,10 @@ public class TimerFragment extends Fragment
         TimerActivity timerAct = getTimerActivity();
         timerAct.deleteTimer(getID(), this);
         //setName("Delete");
+    }
+
+    void setTimerCountdown(){
+
     }
 
 }
