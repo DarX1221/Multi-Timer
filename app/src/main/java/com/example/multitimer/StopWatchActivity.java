@@ -110,8 +110,9 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
     // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML
     public void setFragment(StopWatchFragment stopWatchFragment) {
+        Toast.makeText(this ,"First fragment setter in Activ", Toast.LENGTH_SHORT).show();
         if (listOfSW.size() == 0) {
-            listOfSW.add(stopWatchFragment);
+            listOfSW.add(stopWatchFragment);    // Dodanie pierwszego fragmentu do listy
         }
     }
 
@@ -172,6 +173,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
     int amountOfTimers = 0;
     public void loadData(){
+        Toast.makeText(this ,"Load Data", Toast.LENGTH_SHORT).show();
         ArrayList<String> listOfNames = new ArrayList<>();
         ArrayList<Boolean> listOfBool = new ArrayList<>();
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -197,6 +199,15 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         type = new TypeToken<long[]>() {}.getType();
         clockSumTab = gson.fromJson(json, type);
 
+
+        StopWatchFragment sw2 = listOfSW.get(0);
+        sw2.setName(listOfNames.get(0));
+        sw2.running = listOfBool.get(0);
+        sw2.clockStart = clockStartTab[0];
+        sw2.clockSum = clockSumTab[0];
+        sw2.setTimer(clockSumTab[0]);
+
+
         if(listOfNames !=null && (listOfSW.size() != amountOfTimers)){
         int size = listOfNames.size();
         for (int i = 0 ; i < size; i++) {
@@ -206,9 +217,10 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                 sw.running = listOfBool.get(0);
                 sw.clockStart = clockStartTab[0];
                 sw.clockSum = clockSumTab[0];
+                sw.setTimer(clockSumTab[0]);
             }
-            else {
-                addSW(listOfNames.get(i), listOfBool.get(i), clockStartTab[i], 0L);
+            else {      //Stworzenie zapisanych Fragmentów
+                addSW(listOfNames.get(i), listOfBool.get(i), clockStartTab[i], clockSumTab[i]);
             }
 
         }

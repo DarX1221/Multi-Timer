@@ -15,8 +15,9 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class TimerActivity extends AppCompatActivity
-    implements SettingsFragment.FragmentNameListener {
+
+
+public class TimerActivity extends AppCompatActivity implements SettingsTimerFragment.FragmentNameListenerTimer {
     ArrayList<TimerFragment> listOfTim = new ArrayList();
     int lengthOfListTim = listOfTim.size();
 
@@ -29,7 +30,7 @@ public class TimerActivity extends AppCompatActivity
         TimerFragment timerFragment;
         SettingsFragment settingsFragment;
         public void addTimer(String name, Boolean running, long clockStart, long clockSum){
-             timerFragment = new TimerFragment();
+            timerFragment = new TimerFragment();
             FragmentTransaction fragmentTransactionTim1 = getSupportFragmentManager().beginTransaction();
             listOfTim.add(timerFragment);
             lengthOfListTim = listOfTim.size();
@@ -65,7 +66,7 @@ public class TimerActivity extends AppCompatActivity
             FragmentTransaction fragmentTransactionTim3 = getSupportFragmentManager().beginTransaction();
             TimerFragment timF;
             if((listOfTim.size()>1)) {
-                if ((id == 0) && (listOfTim.size() > 1)) {
+                if (id == 0) {
                     int size = listOfTim.size();
                     for (int i = 0; i < size - 1; i++) {
                         setTimFragment(i + 1, i);
@@ -95,21 +96,27 @@ public class TimerActivity extends AppCompatActivity
             }
         }
 
-
-        //Funkcja umozliwiająca zmianę nazwy pierwszego timera(id=0)
+        //??????
+        //Funkcja umozliwiająca zmianę nazwy pierwszego timera(id=0)????
         String nameTimer;
         @Override
-        public void onInputNameSent(String input, int id) {
-            nameTimer = input;
-            TimerFragment nameChanger = listOfTim.get(id);
-            nameChanger.setName(input);
+        public void onInputNameSent(String name, String minutesStr, int id) {
+            if(minutesStr != null){
+                //Toast.makeText(this, "minutesStr != null", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, minutesStr, Toast.LENGTH_SHORT).show();
+                TimerFragment timerFragmentBufor = listOfTim.get(id);
+
+                int minutes = Integer.parseInt(minutesStr);
+                timerFragmentBufor.setTimerValue(minutes);
+
+            }
+            if(name != null){
+                //Toast.makeText(this, "minutesStr == null", Toast.LENGTH_SHORT).show();
+            nameTimer = name;
+            TimerFragment timerFragmentBuffor = listOfTim.get(id);
+            timerFragmentBuffor.setName(name);}
+            //Toast.makeText(this, "else", Toast.LENGTH_SHORT).show();
         }
-        //Test
-    /*
-        @Override
-        public void deleteTim(){
-            Toast.makeText(this, "Delete TimAct", Toast.LENGTH_SHORT).show();}
-*/
 
         // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML
         public void setFragment(TimerFragment timerFragment) {
@@ -137,13 +144,13 @@ public class TimerActivity extends AppCompatActivity
             ArrayList<Boolean> listOfBooleansTim = new ArrayList<>();
             long[] clockSumTabTim = new long[lengthOfListTim];
             long[] clockStartTabTim = new long[lengthOfListTim];
-            int amountOfTimers = lengthOfListTim;
+            int amountOfTimers = listOfTim.size();
             TimerFragment tim;
-            for (int i = 0; i < lengthOfListTim; i++) {
+            for (int i = 0; i < amountOfTimers; i++) {
                 tim = listOfTim.get(i);
 
                 String nameT = tim.nameTimer;
-                if (nameT == null){ nameT = "naem timer saver";}
+                if (nameT == null){ nameT = "name timer saver";}
                 listOfNamesTim.add(nameT);
                 listOfBooleansTim.add(tim.running);
                 clockStartTabTim[i] = tim.clockStart;
@@ -208,9 +215,10 @@ public class TimerActivity extends AppCompatActivity
                         tim.running = listOfBoolTim.get(0);
                         tim.clockStart = clockStartTabTim[0];
                         tim.clockSum = clockSumTabTim[0];
+                        tim.setTimer(clockSumTabTim[0]);
                     }
                     else {
-                        addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], 0L);
+                        addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], clockSumTabTim[i]);
                     }
                 }
             }

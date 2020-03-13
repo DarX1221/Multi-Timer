@@ -81,33 +81,39 @@ public class TimerFragment extends Fragment
                 break;
             case R.id.timer_text2:
                 Toast.makeText(getContext(), "Set Timer!Fragment", Toast.LENGTH_SHORT).show();
+                //setTimerCountdown();
                 break;
         }
     }
 
     String timerStringTime;
-    int seconds;
-    long clockNow, clockStop;
+    int seconds, countDownSeconds, countDownValueSeconds;
+    long clockNow, clockStop, countDownMilis;
     long clockSum = 0L;
     long clockStart = System.currentTimeMillis();
     public void runTimer(final View view) {
-
         final Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
             public void run() {
-
                 if (running) {
                     clockNow = System.currentTimeMillis();
                     seconds = (int) ((clockNow - clockStart + clockSum) / 1000);
-                    secondsToTime(seconds);
+                    //countDownSeconds = countDownSeconds - seconds;
+                    //countDownMilis = countDownMilis - seconds*1000;
+                    countDownSeconds = countDownValueSeconds - seconds;
+                    secondsToTime(countDownSeconds);
                     timerValue.setText(timerStringTime);
-
                 }
                 handler.postDelayed(this, 100);
             }
 
         });
+    }
+    void setTimer(long milis){
+        seconds = (int) (milis / 1000);
+        timerStringTime = secondsToTime(seconds);
+        timerValue.setText(timerStringTime);
     }
 
     String secondsToTime(int seconds2){
@@ -145,23 +151,23 @@ public class TimerFragment extends Fragment
         timerValue.setText(time);
     }
 
-    boolean showSettings = true;
-    SettingsFragment settingsFragment;
+    boolean showSettings = true;    //Boolean settings visibility of settings Fragment
+    SettingsTimerFragment settingsTimerFragment;
     public void openSettingFragment(View view, TimerFragment timerFragment){
         int idBuffor = timerFragment.getID();
 
         FragmentTransaction transactionSetTim = timerFragment.getChildFragmentManager().beginTransaction();
         transactionSetTim.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        settingsFragment = new SettingsFragment();
-        settingsFragment.setID(idBuffor);
-        settingsFragment.setType(false);
-        transactionSetTim.replace(R.id.settings_container, settingsFragment);
+        settingsTimerFragment = new SettingsTimerFragment();
+        settingsTimerFragment.setID(idBuffor);
+        settingsTimerFragment.setType(false);
+        transactionSetTim.replace(R.id.settings_container, settingsTimerFragment);
 
         if(timerFragment.showSettings){
-            transactionSetTim.replace(R.id.settings_container, settingsFragment);
+            transactionSetTim.replace(R.id.settings_container, settingsTimerFragment);
             timerFragment.showSettings = false;}
         else{
-            transactionSetTim.remove(settingsFragment);
+            transactionSetTim.remove(settingsTimerFragment);
             timerFragment.showSettings=true; }
 
         transactionSetTim.commit();
@@ -171,24 +177,26 @@ public class TimerFragment extends Fragment
     public void setName(String name){
         nameTimer = name;
         textView.setText(name);}
-    int idSW;
-    public void setID(int id){   idSW = id;}
-    public int getID(){     return idSW; }
 
-    public TimerActivity getTimerActivity() {
-        return timerActivity;
-    }
+        void setTimerValue(int minutes){
+        countDownValueSeconds = minutes * 60;
+        timerValue.setText(secondsToTime(minutes*60));
+        }
 
-    public void deleteTimer(){
-        //Toast.makeText(getContext(), "Delete in", Toast.LENGTH_SHORT).show();
-        TimerActivity timerAct = getTimerActivity();
-        timerAct.deleteTimer(getID(), this);
-        //setName("Delete");
-    }
+        int idSW;
+        public void setID(int id){   idSW = id;}
+        public int getID(){     return idSW; }
 
-    void setTimerCountdown(){
+        public TimerActivity getTimerActivity() {
+            return timerActivity;
+        }
 
-    }
+        public void deleteTimer(){
+            TimerActivity timerAct = getTimerActivity();
+            timerAct.deleteTimer(getID(), this);
+        }
+
+
 
 }
 

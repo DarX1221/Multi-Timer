@@ -23,25 +23,23 @@ public class SettingsFragment extends Fragment {
 
     public interface FragmentNameListener {
         void onInputNameSent(String input, int id);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
         editText = view.findViewById(R.id.editText);
+
+        //Przypisanie przycisków, listener'ów oraz funkcji wywołanych po kliknięciu
+        // Button set name
         setNameButton = view.findViewById(R.id.setname_button);
         setNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String input = editText.getText().toString();
-                listener.onInputNameSent(input, getID());
-            }
-        });
-
-        //TEST
+                listener.onInputNameSent(input, getID()); }});
+        // Button delete parent (StopWatch) Fragment
         deleteButton = view.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +50,6 @@ public class SettingsFragment extends Fragment {
 
         return view;
     }
-
     private FragmentNameListener listener = new FragmentNameListener() {
         @Override
         public void onInputNameSent(String input, int id) {

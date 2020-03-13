@@ -39,6 +39,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         textView.setText(nameTimer);
 
         //Uruchomienie funkcji Timer dla tego(this) fragmentu
+        setTimer(clockSum);
         runTimer(view);
 
         //Odwołanie do aktywności, umożliwia przechwycenie adresu pierwszego fragmentu
@@ -69,7 +70,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
     String stopWatchTime;
     int seconds;
     long clockNow, clockStop;
-    long clockSum = 0L;
+    long clockSum;
     long clockStart = System.currentTimeMillis();
     public void runTimer(final View view) {
 
@@ -81,7 +82,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
                 if (running) {
                     clockNow = System.currentTimeMillis();
                     seconds = (int) ((clockNow - clockStart + clockSum) / 1000);
-                    secondsToTime(seconds);
+                    stopWatchTime = secondsToTime(seconds);
                     stopWatchValue.setText(stopWatchTime);
 
                 }
@@ -90,6 +91,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
 
         });
     }
+
 
     String secondsToTime(int seconds2){
         int seconds = seconds2;
@@ -148,7 +150,11 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         transactionSet.commit();
     }
 
-
+    void setTimer(long milis){
+        seconds = (int) (milis / 1000);
+        stopWatchTime = secondsToTime(seconds);
+        stopWatchValue.setText(stopWatchTime);
+    }
 
     public void setName(String name){
         nameTimer = name;
