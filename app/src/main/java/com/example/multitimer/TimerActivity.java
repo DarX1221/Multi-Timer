@@ -2,16 +2,21 @@ package com.example.multitimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
-
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -20,6 +25,7 @@ import java.util.ArrayList;
 public class TimerActivity extends AppCompatActivity implements SettingsTimerFragment.FragmentNameListenerTimer {
     ArrayList<TimerFragment> listOfTim = new ArrayList();
     int lengthOfListTim = listOfTim.size();
+    private static TimerActivity inst;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +54,6 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         }
 
         public void addClick(View view) {
-            String nameTimerFragment = String.format("timerFragment%d", lengthOfListTim);
             timerFragment = new TimerFragment();
             settingsFragment = new SettingsFragment();
             listOfTim.add(timerFragment);
@@ -96,26 +101,19 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             }
         }
 
-        //??????
-        //Funkcja umozliwiająca zmianę nazwy pierwszego timera(id=0)????
+        //Funkcja umozliwiająca zmianę nazwy oraz wartości timera
         String nameTimer;
         @Override
         public void onInputNameSent(String name, String minutesStr, int id) {
             if(minutesStr != null){
-                //Toast.makeText(this, "minutesStr != null", Toast.LENGTH_SHORT).show();
-                //Toast.makeText(this, minutesStr, Toast.LENGTH_SHORT).show();
                 TimerFragment timerFragmentBufor = listOfTim.get(id);
-
                 int minutes = Integer.parseInt(minutesStr);
                 timerFragmentBufor.setTimerValue(minutes);
-
             }
             if(name != null){
-                //Toast.makeText(this, "minutesStr == null", Toast.LENGTH_SHORT).show();
             nameTimer = name;
             TimerFragment timerFragmentBuffor = listOfTim.get(id);
             timerFragmentBuffor.setName(name);}
-            //Toast.makeText(this, "else", Toast.LENGTH_SHORT).show();
         }
 
         // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML
@@ -129,6 +127,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         @Override
         protected void onStart(){
             super.onStart();
+            inst = this;
             loadData();
         }
 
@@ -155,7 +154,6 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                 listOfBooleansTim.add(tim.running);
                 clockStartTabTim[i] = tim.clockStart;
                 clockSumTabTim[i] = tim.clockSum;
-
             }
 
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -238,5 +236,84 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             timBuf2.clockSum = timBuf1.clockSum;
         }
 
+        public static TimerActivity instance(){
+            return inst;
+        }
+
+
+    Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    MediaPlayer mediaPlayer;
+
+    FragmentTransaction fragmentTransactionAlarm = getSupportFragmentManager().beginTransaction();
+    AlarmFragment alarmFragment = new AlarmFragment();
+    String alarmName = "Alarm name Activ";
+    void alarm(Boolean power){
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, Alarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+        fragmentTransactionAlarm.replace(R.id.alarm_box, alarmFragment);
+
+
+        //Audio
+
+
+
+        mediaPlayer = MediaPlayer.create(this, alarmUri);
+
+        //  ON alarm
+        if(power) {
+            mediaPlayer.start();
+
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis(), pendingIntent);
+
+            fragmentTransactionAlarm.replace(R.id.alarm_box, alarmFragment);
+            fragmentTransactionAlarm.commit();
+            alarmFragment.setTimerActivity(this);
+
+
+            Ringtone ringtone = RingtoneManager.getRingtone(getBaseContext(), alarmUri);
+            //ringtone.play();
+        }
+        //  Off alarm
+        if(!power){
+            mediaPlayer.setLooping(false);
+            mediaPlayer.pause();
+            mediaPlayer.stop();
+            //Ringtone ringtone = RingtoneManager.getRingtone(getBaseContext(), alarmUri);
+            //ringtone.stop();
+            //alarmManager.cancel(pendingIntent);
+            Toast.makeText(this, "Stop!kkjhkjlh", Toast.LENGTH_SHORT).show();
+
+            fragmentTransactionAlarm.remove(alarmFragment);
+            fragmentTransactionAlarm.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+
+        }
+        //fragmentTransactionAlarm.commit();
+    }
+
+    void alarmStop(){
+
+        mediaPlayer.setLooping(false);
+        mediaPlayer.pause();
+        mediaPlayer.stop();
+        //Ringtone ringtone = RingtoneManager.getRingtone(getBaseContext(), alarmUri);
+        //ringtone.stop();
+        //alarmManager.cancel(pendingIntent);
+        Toast.makeText(this, "Stop!kkjhkjlh", Toast.LENGTH_SHORT).show();
+
+        fragmentTransactionAlarm.remove(alarmFragment);
+        fragmentTransactionAlarm.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+
+
+        fragmentTransactionAlarm.commit();
+
+
+
+    }
 }
 

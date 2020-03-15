@@ -1,17 +1,17 @@
 package com.example.multitimer;
 
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 
 /**
@@ -44,7 +44,7 @@ public class TimerFragment extends Fragment
         resetButton.setOnClickListener(this);
         Button setButton = (Button) view.findViewById(R.id.setting_button_timer);
         setButton.setOnClickListener(this);
-        timerValue = (TextView) view.findViewById(R.id.timer_text2);
+        timerValue = (TextView) view.findViewById(R.id.timer_value_text);
         timerValue.setOnClickListener(this);
 
         textView.setText(nameTimer);
@@ -59,10 +59,6 @@ public class TimerFragment extends Fragment
 
         return view;
     }
-
-
-
-
 
     @Override
     public void onClick(View view) {
@@ -79,9 +75,8 @@ public class TimerFragment extends Fragment
             case R.id.setting_button_timer:
                 openSettingFragment(view, this);
                 break;
-            case R.id.timer_text2:
-                Toast.makeText(getContext(), "Set Timer!Fragment", Toast.LENGTH_SHORT).show();
-                //setTimerCountdown();
+            case R.id.timer_value_text:
+                openSettingFragment(view, this);
                 break;
         }
     }
@@ -104,6 +99,10 @@ public class TimerFragment extends Fragment
                     countDownSeconds = countDownValueSeconds - seconds;
                     secondsToTime(countDownSeconds);
                     timerValue.setText(timerStringTime);
+                    if(countDownSeconds <= -5){
+                        running = false;
+                        alarm();
+                    }
                 }
                 handler.postDelayed(this, 100);
             }
@@ -195,6 +194,24 @@ public class TimerFragment extends Fragment
             TimerActivity timerAct = getTimerActivity();
             timerAct.deleteTimer(getID(), this);
         }
+
+
+
+
+        public void alarm(){
+            //reset chronometer
+            running = false;
+            clockSum = 0;
+            seconds = 0;
+            timerStringTime = "00:00:00";
+            timerValue.setText(timerStringTime);
+
+            timerActivity.alarmName = nameTimer;
+            timerActivity.alarm(true);
+
+        }
+
+
 
 
 
