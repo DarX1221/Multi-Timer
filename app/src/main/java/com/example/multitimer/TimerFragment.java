@@ -83,7 +83,7 @@ public class TimerFragment extends Fragment
 
     String timerStringTime;
     int seconds, countDownSeconds, countDownValueSeconds;
-    long clockNow, clockStop, countDownMilis;
+    long clockNow, clockStop, timerEndClock;
     long clockSum = 0L;
     long clockStart = System.currentTimeMillis();
     public void runTimer(final View view) {
@@ -99,7 +99,7 @@ public class TimerFragment extends Fragment
                     countDownSeconds = countDownValueSeconds - seconds;
                     secondsToTime(countDownSeconds);
                     timerValue.setText(timerStringTime);
-                    if(countDownSeconds <= -5){
+                    if(countDownSeconds <= -3){
                         running = false;
                         alarm();
                     }
@@ -128,6 +128,8 @@ public class TimerFragment extends Fragment
         if (!running) {
             running = true;
             clockStart = System.currentTimeMillis();
+            timerEndClock = clockStart + (seconds * 1000);
+            timerActivity.endTimer = timerEndClock;
         }
     }
     public void stopChronometer(View view) {
@@ -185,6 +187,9 @@ public class TimerFragment extends Fragment
         int idSW;
         public void setID(int id){   idSW = id;}
         public int getID(){     return idSW; }
+        long getEndTimerClock() {
+            return timerEndClock;
+        }
 
         public TimerActivity getTimerActivity() {
             return timerActivity;
@@ -207,7 +212,7 @@ public class TimerFragment extends Fragment
             timerValue.setText(timerStringTime);
 
             timerActivity.alarmName = nameTimer;
-            timerActivity.alarm(true);
+            timerActivity.alarmStart();
 
         }
 

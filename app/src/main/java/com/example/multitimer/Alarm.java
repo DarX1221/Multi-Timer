@@ -1,20 +1,16 @@
 package com.example.multitimer;
 
-import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.media.audiofx.Virtualizer;
 import android.net.Uri;
-import android.provider.Settings;
-import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+//import static com.example.multitimer.App.CHANNEL_ID;
 
 public class Alarm extends BroadcastReceiver {
     Boolean alarmSet;
@@ -24,9 +20,18 @@ public class Alarm extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         TimerActivity timerActivity = TimerActivity.instance();
         //mp = MediaPlayer.create(context, alarmUri);
+/*
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default")
+                //.setSmallIcon(R.drawable.);
+                .setContentTitle("Alarm")
+                .setContentText("Some text trolo")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
 
 
+
+
+*/
 
 
     }

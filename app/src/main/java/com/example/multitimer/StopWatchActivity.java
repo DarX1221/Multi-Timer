@@ -199,7 +199,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         type = new TypeToken<long[]>() {}.getType();
         clockSumTab = gson.fromJson(json, type);
 
-
+/*
         StopWatchFragment sw2 = listOfSW.get(0);
         sw2.setName(listOfNames.get(0));
         sw2.running = listOfBool.get(0);
@@ -208,10 +208,30 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         sw2.setTimer(clockSumTab[0]);
 
 
+
+
+        if(listOfNamesTim !=null && (listOfTim.size() != amountOfTimers)){
+                int size = listOfNamesTim.size();
+                for (int i = 0 ; i < size; i++) {
+                    if(i==0){       //Przypisanie parametrów dla pierwszego Fragment'u stworzonego przez odwołanie .XML
+                        TimerFragment tim = listOfTim.get(0);
+                        tim.setName(listOfNamesTim.get(0));
+                        tim.running = listOfBoolTim.get(0);
+                        tim.clockStart = clockStartTabTim[0];
+                        tim.clockSum = clockSumTabTim[0];
+                        tim.setTimer(clockSumTabTim[0]);
+                    }
+                    else {
+                        addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], clockSumTabTim[i]);
+                    }
+                }
+*/
+
         if(listOfNames !=null && (listOfSW.size() != amountOfTimers)){
         int size = listOfNames.size();
         for (int i = 0 ; i < size; i++) {
             if(i==0){       //Przypisanie parametrów dla pierwszego Fragment'u stworzonego przez odwołanie .XML
+                            //  Nie można użyć metody addSW(), gdyż stworzy ona kolejny StopWatchFragment
                 StopWatchFragment sw = listOfSW.get(0);
                 sw.setName(listOfNames.get(0));
                 sw.running = listOfBool.get(0);
