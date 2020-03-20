@@ -99,10 +99,14 @@ public class TimerFragment extends Fragment
                     countDownSeconds = countDownValueSeconds - seconds;
                     secondsToTime(countDownSeconds);
                     timerValue.setText(timerStringTime);
-                    if(countDownSeconds <= -3){
-                        running = false;
-                        alarm();
+                    if((countDownSeconds <= -1) && countDownSeconds > -2){      // app need time to run MediaPlayer
+                        timerActivity.alarmStart();
+
                     }
+                    if(countDownSeconds <= -1){
+                        running = false;
+                        secondsToTime(0);
+                        timerValue.setText(timerStringTime);}
                 }
                 handler.postDelayed(this, 100);
             }
@@ -110,6 +114,7 @@ public class TimerFragment extends Fragment
         });
     }
     void setTimer(long milis){
+        //  Change Vale of time in milis to time format and set on TextView
         seconds = (int) (milis / 1000);
         timerStringTime = secondsToTime(seconds);
         timerValue.setText(timerStringTime);
@@ -125,11 +130,14 @@ public class TimerFragment extends Fragment
     }
 
     public void startChronometer(View view) {
-        if (!running) {
+        if (!running && countDownValueSeconds > 1) {
             running = true;
             clockStart = System.currentTimeMillis();
-            timerEndClock = clockStart + (seconds * 1000);
-            timerActivity.endTimer = timerEndClock;
+            timerEndClock = clockStart + (countDownValueSeconds * 1000);
+
+            timerActivity.setEndTimers(getID(), timerEndClock);
+                //timerActivity.alarmStart();
+
         }
     }
     public void stopChronometer(View view) {
@@ -178,15 +186,15 @@ public class TimerFragment extends Fragment
     public void setName(String name){
         nameTimer = name;
         textView.setText(name);}
-
+        //  Setter of countdown timer
         void setTimerValue(int minutes){
-        countDownValueSeconds = minutes * 60;
+        countDownValueSeconds = minutes;  // * 60;
         timerValue.setText(secondsToTime(minutes*60));
         }
 
-        int idSW;
-        public void setID(int id){   idSW = id;}
-        public int getID(){     return idSW; }
+        private int idTim;
+        public void setID(int id){   idTim = id;}
+        public int getID(){     return idTim; }
         long getEndTimerClock() {
             return timerEndClock;
         }
@@ -212,7 +220,7 @@ public class TimerFragment extends Fragment
             timerValue.setText(timerStringTime);
 
             timerActivity.alarmName = nameTimer;
-            timerActivity.alarmStart();
+            //timerActivity.alarmStart();
 
         }
 
