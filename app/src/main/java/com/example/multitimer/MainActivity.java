@@ -12,21 +12,11 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RelativeLayout myLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myLayout = (RelativeLayout) findViewById(R.id.activity_main);
 
-
-        myLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Touched", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
 
     }
 

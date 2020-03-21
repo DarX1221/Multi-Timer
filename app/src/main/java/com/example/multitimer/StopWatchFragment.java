@@ -156,11 +156,15 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         stopWatchValue.setText(stopWatchTime);
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         nameTimer = name;
+        if (name == null) {
+            name = "Null name timer";
+        }
         textView.setText(name);
-        StopWatchActivity sAct = getStopWatchActivity();
-        sAct.saveData();}
+        //StopWatchActivity sAct = getStopWatchActivity();
+        //sAct.saveData();
+    }
 
     int idSW;
     public void setID(int id){   idSW = id;}

@@ -92,7 +92,7 @@ public class SettingsFragment extends Fragment {
         return idSet;
     }
 
-    //Switch type, Stopwatch = true, Timer = False
+    //  Switch type, Stopwatch = true, Timer = False
     Boolean type;
     void setType(Boolean type){this.type = type;}
     Boolean getType(){return type;}

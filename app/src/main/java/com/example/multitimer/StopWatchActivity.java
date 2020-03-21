@@ -18,11 +18,13 @@ import java.util.ArrayList;
 public class StopWatchActivity extends AppCompatActivity implements SettingsFragment.FragmentNameListener {
     ArrayList<StopWatchFragment> listOfSW = new ArrayList();
     int lengthOfList = listOfSW.size();
+    int amountOfTimers = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
+        loadData();
     }
 
 
@@ -109,18 +111,25 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
 
     // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML
+    Boolean firstFragment = false;
     public void setFragment(StopWatchFragment stopWatchFragment) {
-        Toast.makeText(this ,"First fragment setter in Activ", Toast.LENGTH_SHORT).show();
-        if (listOfSW.size() == 0) {
-            listOfSW.add(stopWatchFragment);    // Dodanie pierwszego fragmentu do listy
+        Toast.makeText(this, "SetFragment", Toast.LENGTH_SHORT).show();
+        if(!firstFragment) {
+            if (listOfSW.size() == 0) {
+                listOfSW.add(stopWatchFragment);    // Dodanie pierwszego fragmentu do listy
+            }
+            if (listOfSW.size() == 1) {
+                listOfSW.set(0, stopWatchFragment);
+            }
         }
+        firstFragment = true;
     }
 
 
     @Override
     protected void onStart(){
         super.onStart();
-        loadData();
+        //loadData();
     }
 
     @Override
@@ -142,7 +151,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
             sw = listOfSW.get(i);
 
             String nameT = sw.nameTimer;
-            if (nameT == null){ nameT = "naem timer saver";}
+            if (nameT == null){ nameT = "Name Timer:";}
             listOfNames.add(nameT);
             listOfBooleans.add(sw.running);
             clockStartTab[i] = sw.clockStart;
@@ -171,9 +180,9 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         editor.commit();
     }
 
-    int amountOfTimers = 0;
+
     public void loadData(){
-        Toast.makeText(this ,"Load Data", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Load", Toast.LENGTH_LONG).show();
         ArrayList<String> listOfNames = new ArrayList<>();
         ArrayList<Boolean> listOfBool = new ArrayList<>();
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -199,40 +208,15 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         type = new TypeToken<long[]>() {}.getType();
         clockSumTab = gson.fromJson(json, type);
 
-/*
-        StopWatchFragment sw2 = listOfSW.get(0);
-        sw2.setName(listOfNames.get(0));
-        sw2.running = listOfBool.get(0);
-        sw2.clockStart = clockStartTab[0];
-        sw2.clockSum = clockSumTab[0];
-        sw2.setTimer(clockSumTab[0]);
 
-
-
-
-        if(listOfNamesTim !=null && (listOfTim.size() != amountOfTimers)){
-                int size = listOfNamesTim.size();
-                for (int i = 0 ; i < size; i++) {
-                    if(i==0){       //Przypisanie parametrów dla pierwszego Fragment'u stworzonego przez odwołanie .XML
-                        TimerFragment tim = listOfTim.get(0);
-                        tim.setName(listOfNamesTim.get(0));
-                        tim.running = listOfBoolTim.get(0);
-                        tim.clockStart = clockStartTabTim[0];
-                        tim.clockSum = clockSumTabTim[0];
-                        tim.setTimer(clockSumTabTim[0]);
-                    }
-                    else {
-                        addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], clockSumTabTim[i]);
-                    }
-                }
-*/
-
-        if(listOfNames !=null && (listOfSW.size() != amountOfTimers)){
-        int size = listOfNames.size();
+        if((listOfNames != null)) { // && (listOfSW.size() != amountOfTimers)){
+        int size = amountOfTimers;
         for (int i = 0 ; i < size; i++) {
-            if(i==0){       //Przypisanie parametrów dla pierwszego Fragment'u stworzonego przez odwołanie .XML
+            if(i<1){       //Przypisanie parametrów dla pierwszego Fragment'u stworzonego przez odwołanie .XML
                             //  Nie można użyć metody addSW(), gdyż stworzy ona kolejny StopWatchFragment
+                //listOfSW.set(0, new StopWatchFragment());
                 StopWatchFragment sw = listOfSW.get(0);
+
                 sw.setName(listOfNames.get(0));
                 sw.running = listOfBool.get(0);
                 sw.clockStart = clockStartTab[0];

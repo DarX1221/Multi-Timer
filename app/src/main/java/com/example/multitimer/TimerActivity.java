@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,19 +36,21 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
     ArrayList<TimerFragment> listOfTim = new ArrayList();
     int lengthOfListTim = listOfTim.size();
     private static TimerActivity inst;
-
+    int amountOfTimers;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
-        startThreadClass();
+        loadData();
+//        addTimer("Trololo", true, System.currentTimeMillis(), 45000, 30);
+        //startThreadClass();
     }
 
         TimerFragment timerFragment;
         SettingsFragment settingsFragment;
-        public void addTimer(String name, Boolean running, long clockStart, long clockSum){
+        public void addTimer(String name, Boolean running, long clockStart, long clockSum, int minutes){
             timerFragment = new TimerFragment();
             FragmentTransaction fragmentTransactionTim1 = getSupportFragmentManager().beginTransaction();
             listOfTim.add(timerFragment);
@@ -55,15 +58,19 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             fragmentTransactionTim1.add(R.id.timer_fragment, listOfTim.get(lengthOfListTim-1));
             fragmentTransactionTim1.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             fragmentTransactionTim1.commit();
+
             //Settery
             settingsFragment = new SettingsFragment();
             timerFragment.setID(lengthOfListTim-1);
             settingsFragment.setID(lengthOfListTim-1);
             timerFragment.nameTimer = name;
             timerFragment.running = running;
+            //timerFragment.setTimerValue(minutes);
+            timerFragment.countDownValueSeconds = (minutes / 60);
             timerFragment.clockStart = clockStart;
             timerFragment.clockSum = clockSum;
         }
+
 
         public void addClick(View view) {
             timerFragment = new TimerFragment();
@@ -129,10 +136,20 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         }
 
         // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML
+    Boolean firstFragment = false;
         public void setFragment(TimerFragment timerFragment) {
-            if (listOfTim.size() == 0) {
-                listOfTim.add(timerFragment);
+
+            if(!firstFragment) {
+                if (listOfTim.size() <= 1) {
+                    listOfTim.add(0, new TimerFragment());
+                    listOfTim.set(0, timerFragment);
+                }
+                /*if (listOfTim.size() == 0) {
+                    listOfTim.add(timerFragment);    // Dodanie pierwszego fragmentu do listy
+                }*/
+
             }
+            firstFragment = true;
         }
 
 
@@ -140,7 +157,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         protected void onStart(){
             super.onStart();
             inst = this;
-            loadData();
+            //loadData();
         }
 
 
@@ -150,25 +167,28 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             super.onPause();
             saveData();
             setLowestEndTimer();
-            //firstAlarmClock = System.currentTimeMillis() + 3000;
             setNotificationAlarm();
         }
 
+
         void saveData(){
-            int amountOfTimers = listOfTim.size();
+            amountOfTimers = listOfTim.size();
             ArrayList<String> listOfNamesTim = new ArrayList<>();
             ArrayList<Boolean> listOfBooleansTim = new ArrayList<>();
+            ArrayList<Integer> countDownMinutesValue = new ArrayList<>();
             long[] clockSumTabTim = new long[amountOfTimers];
             long[] clockStartTabTim = new long[amountOfTimers];
+
 
             TimerFragment tim;
             for (int i = 0; i < amountOfTimers; i++) {
                 tim = listOfTim.get(i);
 
                 String nameT = tim.nameTimer;
-                if (nameT == null){ nameT = "name timer saver";}
+                if (nameT == null){ nameT = "Name timer";}
                 listOfNamesTim.add(nameT);
                 listOfBooleansTim.add(tim.running);
+                countDownMinutesValue.add(tim.getCountdownTimerValue());
                 clockStartTabTim[i] = tim.clockStart;
                 clockSumTabTim[i] = tim.clockSum;
             }
@@ -185,6 +205,9 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             json = gson.toJson(listOfBooleansTim);
             editor.putString("key_bool", json);
 
+            json = gson.toJson(countDownMinutesValue);
+            editor.putString("key_cd", json);
+
             json = gson.toJson(clockStartTabTim);
             editor.putString("key_start", json);
 
@@ -194,15 +217,19 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             editor.commit();
         }
 
-        int amountOfTimers = 0;
+
+
         public void loadData(){
 
             ArrayList<String> listOfNamesTim = new ArrayList<>();
             ArrayList<Boolean> listOfBoolTim = new ArrayList<>();
+            ArrayList<Integer> countDownMinutesValue = new ArrayList<>();
+            ArrayList<Integer> countDownSecondsValue = new ArrayList<>();
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             amountOfTimers = sharedPref.getInt("amount_timers", 1);
+            Toast.makeText(this, ("Load timers:" + amountOfTimers), Toast.LENGTH_LONG).show();
             //  set usage values
-            endTimers = new long[amountOfTimers];
+
 
             Gson gson = new Gson();
             String json = sharedPref.getString("key_names", null);
@@ -212,6 +239,13 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             json = sharedPref.getString("key_bool", null);
             type = new TypeToken<ArrayList<Boolean>>() {}.getType();
             listOfBoolTim = gson.fromJson(json, type);
+
+            json = sharedPref.getString("key_cd", null);
+            type = new TypeToken<ArrayList<Integer>>() {}.getType();
+            countDownMinutesValue = gson.fromJson(json, type);
+            json = sharedPref.getString("key_cd_sec", null);
+            type = new TypeToken<ArrayList<Integer>>() {}.getType();
+            countDownSecondsValue = gson.fromJson(json, type);
 
             long[] clockSumTabTim = new long[amountOfTimers];
             long[] clockStartTabTim = new long[amountOfTimers];
@@ -224,19 +258,23 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             type = new TypeToken<long[]>() {}.getType();
             clockSumTabTim = gson.fromJson(json, type);
 
-            if(listOfNamesTim !=null && (listOfTim.size() != amountOfTimers)){
-                int size = listOfNamesTim.size();
+
+
+            if(listOfNamesTim != null) { // && (listOfTim.size() != amountOfTimers)){
+                int size = amountOfTimers;
                 for (int i = 0 ; i < size; i++) {
+                    //if(countDownTabTim == null){countDownTabTim[i] = 125;}
                     if(i==0){       //Przypisanie parametrów dla pierwszego Fragment'u stworzonego przez odwołanie .XML
                         TimerFragment tim = listOfTim.get(0);
                         tim.setName(listOfNamesTim.get(0));
                         tim.running = listOfBoolTim.get(0);
                         tim.clockStart = clockStartTabTim[0];
                         tim.clockSum = clockSumTabTim[0];
+                        tim.setTimerValue(countDownMinutesValue.get(0));
                         tim.setTimer(clockSumTabTim[0]);
                     }
                     else {
-                        addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], clockSumTabTim[i]);
+                        addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], clockSumTabTim[i], countDownMinutesValue.get(i));
                     }
                 }
             }
@@ -261,19 +299,29 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         }
 
 
-    long[] endTimers;
+
+        ArrayList<Long> endTimersList = new ArrayList<>();
     public void setEndTimers(int id, long endTimer){
-            endTimers[id] = endTimer;
+
+        do{
+            endTimersList.add(0L);
+        }
+        while(endTimersList.size() < id+2);
+
+        endTimersList.set(id, endTimer);
+            //endTimers[id] = endTimer;
             this.firstAlarmClock = endTimer;
-            setLowestEndTimer();
+            //setLowestEndTimer();
+            endTimersList.add(0L);
     }
 
 
         //  set lowest endtimer clock on long firstAlarmClock and return id of this Fragment
     public void setLowestEndTimer(){
-        for (int i = 0; i < amountOfTimers; i++){
-            if ((endTimers[i] < firstAlarmClock) && (endTimers[i] != 0)){
-                firstAlarmClock = endTimers[i];
+        amountOfTimers = listOfTim.size();
+        for (int i = 0; i < amountOfTimers -1; i++){
+            if ((endTimersList.get(i) < firstAlarmClock) && (endTimersList.get(i) != 0)){
+                firstAlarmClock = endTimersList.get(i);
                 firstAlarmClockID = i;
             }
         }
