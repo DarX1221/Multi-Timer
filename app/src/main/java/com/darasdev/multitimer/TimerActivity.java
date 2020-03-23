@@ -50,7 +50,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
 
         TimerFragment timerFragment;
         SettingsFragment settingsFragment;
-        public void addTimer(String name, Boolean running, long clockStart, long clockSum, int minutes){
+        public void addTimer(String name, Boolean running, long clockStart, long clockSum, int seconds){
             timerFragment = new TimerFragment();
             FragmentTransaction fragmentTransactionTim1 = getSupportFragmentManager().beginTransaction();
             listOfTim.add(timerFragment);
@@ -66,9 +66,11 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             timerFragment.nameTimer = name;
             timerFragment.running = running;
             //timerFragment.setTimerValue(minutes);
-            timerFragment.countDownValueSeconds = (minutes / 60);
+            timerFragment.countDownValueSeconds = seconds;
             timerFragment.clockStart = clockStart;
             timerFragment.clockSum = clockSum;
+            int secondsValue = (int)(seconds - (clockSum / 1000));
+            timerFragment.setTimerTextviewSeconds(secondsValue);
         }
 
 
@@ -175,7 +177,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             amountOfTimers = listOfTim.size();
             ArrayList<String> listOfNamesTim = new ArrayList<>();
             ArrayList<Boolean> listOfBooleansTim = new ArrayList<>();
-            ArrayList<Integer> countDownMinutesValue = new ArrayList<>();
+            ArrayList<Integer> countDownSecondsValue = new ArrayList<>();
             long[] clockSumTabTim = new long[amountOfTimers];
             long[] clockStartTabTim = new long[amountOfTimers];
 
@@ -185,10 +187,10 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                 tim = listOfTim.get(i);
 
                 String nameT = tim.nameTimer;
-                if (nameT == null){ nameT = "Name timer";}
+                if (nameT == null){ nameT = "Name timer:";}
                 listOfNamesTim.add(nameT);
                 listOfBooleansTim.add(tim.running);
-                countDownMinutesValue.add(tim.getCountdownTimerValue());
+                countDownSecondsValue.add(tim.getCountdownTimerValueSeconds());
                 clockStartTabTim[i] = tim.clockStart;
                 clockSumTabTim[i] = tim.clockSum;
             }
@@ -205,8 +207,8 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             json = gson.toJson(listOfBooleansTim);
             editor.putString("key_bool", json);
 
-            json = gson.toJson(countDownMinutesValue);
-            editor.putString("key_cd", json);
+            json = gson.toJson(countDownSecondsValue);
+            editor.putString("key_cd_sec", json);
 
             json = gson.toJson(clockStartTabTim);
             editor.putString("key_start", json);
@@ -223,7 +225,6 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
 
             ArrayList<String> listOfNamesTim = new ArrayList<>();
             ArrayList<Boolean> listOfBoolTim = new ArrayList<>();
-            ArrayList<Integer> countDownMinutesValue = new ArrayList<>();
             ArrayList<Integer> countDownSecondsValue = new ArrayList<>();
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             amountOfTimers = sharedPref.getInt("amount_timers", 1);
@@ -240,9 +241,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             type = new TypeToken<ArrayList<Boolean>>() {}.getType();
             listOfBoolTim = gson.fromJson(json, type);
 
-            json = sharedPref.getString("key_cd", null);
-            type = new TypeToken<ArrayList<Integer>>() {}.getType();
-            countDownMinutesValue = gson.fromJson(json, type);
+
             json = sharedPref.getString("key_cd_sec", null);
             type = new TypeToken<ArrayList<Integer>>() {}.getType();
             countDownSecondsValue = gson.fromJson(json, type);
@@ -270,11 +269,13 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                         tim.running = listOfBoolTim.get(0);
                         tim.clockStart = clockStartTabTim[0];
                         tim.clockSum = clockSumTabTim[0];
-                        tim.setTimerValue(countDownMinutesValue.get(0));
-                        tim.setTimer(clockSumTabTim[0]);
+                        //tim.setTimerValue(countDownSecondsValue.get(0));
+                        tim.countDownValueSeconds = countDownSecondsValue.get(0);
+                        tim.setTimerTextviewSeconds((int)(countDownSecondsValue.get(0) - (clockSumTabTim[0]/1000)));
                     }
                     else {
-                        addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], clockSumTabTim[i], countDownMinutesValue.get(i));
+                        int secondsValue = ((int)(countDownSecondsValue.get(i) - (clockSumTabTim[i]/1000)));        // Valeu on TextView Timer
+                        addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], clockSumTabTim[i], countDownSecondsValue.get(i));
                     }
                 }
             }
