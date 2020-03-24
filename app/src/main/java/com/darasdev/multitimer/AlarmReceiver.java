@@ -1,4 +1,4 @@
-package com.example.multitimer;
+package com.darasdev.multitimer;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 
-import static com.example.multitimer.App.CHANNEL_1_ID;
+import static com.darasdev.multitimer.App.CHANNEL_1_ID;
 
 public class AlarmReceiver extends BroadcastReceiver {
     Boolean alarm;

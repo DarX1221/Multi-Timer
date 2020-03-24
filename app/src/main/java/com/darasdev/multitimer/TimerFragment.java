@@ -1,4 +1,4 @@
-package com.example.multitimer;
+package com.darasdev.multitimer;
 
 
 import android.os.Bundle;
@@ -25,10 +25,6 @@ public class TimerFragment extends Fragment
     TextView timerValue;
     TimerActivity timerActivity;
 
-    public TimerFragment() {
-        // Required empty public constructor
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,12 +48,12 @@ public class TimerFragment extends Fragment
         //Uruchomienie funkcji Timer dla tego(this) fragmentu
         runTimer(view);
 
-        //Odwołanie do aktywności, umożliwia przechwycenie adresu pierwszego fragmentu
+        //  First Fragment is create by .XML layout, setFragment() let to catch this Fragment
         timerActivity = (TimerActivity) getActivity();
         timerActivity.setFragment(this);
 
 
-
+        // set timer value, if value is null set 0
         if(timerStringTime == null){
             timerValue.setText("00:00:00");
         }
@@ -65,8 +61,6 @@ public class TimerFragment extends Fragment
             timerValue.setText(timerStringTime);
         }
         setEndTimerInActivity();
-        //countDownSeconds = (int)(countDownValueSeconds - (clockSum / 1000));
-        //setTimerTextviewMilis(countDownSeconds);
         return view;
     }
 
@@ -91,6 +85,8 @@ public class TimerFragment extends Fragment
         }
     }
 
+
+    //  engine of timer
     String timerStringTime;
     int seconds, countDownSeconds, countDownValueSeconds;
     long clockNow, clockStop, timerEndClock;
@@ -109,34 +105,19 @@ public class TimerFragment extends Fragment
                     timerValue.setText(timerStringTime);
                     if((countDownSeconds <= -1) && countDownSeconds > -2){      // app need time to run MediaPlayer
                         timerActivity.alarmStart();
-
                     }
                     if(countDownSeconds <= -1){
                         running = false;
                         timerStringTime = secondsToTimeFormatString(0);
                         timerValue.setText(timerStringTime);}
                 }
-                handler.postDelayed(this, 100);
+                handler.postDelayed(this, 100);         // delayMillis set refresh rate of timer
             }
 
         });
     }
 
-
-    void setTimerTextviewSeconds(int secondsBufor){
-        timerStringTime = secondsToTimeFormatString(secondsBufor);
-        if(timerValue != null) {
-            timerValue.setText(timerStringTime);
-        }
-    }
-    void setTimerTextviewMilis(long milis){
-        //  Change Vale of time in milis to time format and set on TextView
-        seconds = (int) (milis / 1000);
-        timerStringTime = secondsToTimeFormatString(seconds);
-        timerValue.setText(timerStringTime);
-    }
-
-
+        //      Convert seconds to String format 00:00:00
     String secondsToTimeFormatString(int seconds2){
         int seconds = seconds2;
         int hours = seconds / 3600;
@@ -171,13 +152,10 @@ public class TimerFragment extends Fragment
         timerStringTime = "00:00:00";
         timerValue.setText(timerStringTime);
     }
-    public void setChronometer(){
-        int secondsBuf = (int)clockSum / 1000;
-        String time = secondsToTimeFormatString(secondsBuf);
-        timerValue.setText(time);
-    }
 
-    boolean showSettings = true;    //Boolean settings visibility of settings Fragment
+
+
+    boolean showSettings = true;    //Boolean set visibility of settings Fragment
     SettingsTimerFragment settingsTimerFragment;
     public void openSettingFragment(View view, TimerFragment timerFragment){
         int idBuffor = timerFragment.getID();
@@ -200,46 +178,47 @@ public class TimerFragment extends Fragment
     }
 
 
-    public void setName(String name){
-        nameTimer = name;
-        textView.setText(name);}
-        //  Setter of countdown timer
-        void setTimerValue(int minutes){
-        countDownValueSeconds = minutes * 60;
-        timerValue.setText(secondsToTimeFormatString(minutes*60));
-        }
-    void setTimerValueSeconds(int seconds){
-        timerValue.setText(secondsToTimeFormatString(seconds));
+
+    //  Getters & Setters
+    private int idTim;
+    public void setID(int id){   idTim = id;}
+    public int getID(){     return idTim; }
+
+    public void setChronometer(){
+        int secondsBuf = (int)clockSum / 1000;
+        String time = secondsToTimeFormatString(secondsBuf);
+        timerValue.setText(time);
     }
 
+   public void setTimerSeconds(int secondsBufor){
+        countDownValueSeconds =  secondsBufor;
+        timerStringTime = secondsToTimeFormatString(secondsBufor);
+        if(timerValue != null) {
+            timerValue.setText(timerStringTime);
+        }
+    }
+    void setTimerMilis(long milis){
+        seconds = (int) (milis * 1000);
+        countDownValueSeconds =  seconds;
+        timerStringTime = secondsToTimeFormatString(seconds);
+        timerValue.setText(timerStringTime);
+    }
 
+    public void setName(String name){
+        nameTimer = name;
+        textView.setText(name);
+    }
 
     public int getCountdownTimerValueSeconds(){
         return countDownValueSeconds;
     }
 
-
-    // YENBI
-    public int getCountdownTimerValue(){
-        int minutes = countDownValueSeconds * 60;
-        return minutes;
-    }
-    public int getCountdownTimerValueSec(){
-        int secondsBufor = countDownValueSeconds;
-        return secondsBufor;
-    }
-
-
-
-        private int idTim;
-        public void setID(int id){   idTim = id;}
-        public int getID(){     return idTim; }
-
-    void setEndTimerInActivity(){
+    public void setEndTimerInActivity(){
         long endTimer = getEndTimerClock();
         timerActivity.setEndTimers(getID(), endTimer);
     }
-        long getEndTimerClock() {
+
+    public long getEndTimerClock() {
             return timerEndClock;
         }
 
@@ -247,13 +226,16 @@ public class TimerFragment extends Fragment
             return timerActivity;
         }
 
+
+
+
+
+
+
         public void deleteTimer(){
             TimerActivity timerAct = getTimerActivity();
             timerAct.deleteTimer(getID(), this);
         }
-
-
-
 
 }
 

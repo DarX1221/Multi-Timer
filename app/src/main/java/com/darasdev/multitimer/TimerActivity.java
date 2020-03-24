@@ -1,4 +1,4 @@
-package com.example.multitimer;
+package com.darasdev.multitimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,7 +15,6 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -26,7 +25,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import static com.example.multitimer.App.CHANNEL_1_ID;
+import static com.darasdev.multitimer.App.CHANNEL_1_ID;
 
 
 public class TimerActivity extends AppCompatActivity implements SettingsTimerFragment.FragmentNameListenerTimer {
@@ -44,9 +43,8 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         loadData();
-//        addTimer("Trololo", true, System.currentTimeMillis(), 45000, 30);
-        //startThreadClass();
     }
+
 
         TimerFragment timerFragment;
         SettingsFragment settingsFragment;
@@ -59,7 +57,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             fragmentTransactionTim1.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             fragmentTransactionTim1.commit();
 
-            //Settery
+            //Setter's
             settingsFragment = new SettingsFragment();
             timerFragment.setID(lengthOfListTim-1);
             settingsFragment.setID(lengthOfListTim-1);
@@ -70,10 +68,11 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             timerFragment.clockStart = clockStart;
             timerFragment.clockSum = clockSum;
             int secondsValue = (int)(seconds - (clockSum / 1000));
-            timerFragment.setTimerTextviewSeconds(secondsValue);
+            timerFragment.setTimerSeconds(secondsValue);
         }
 
 
+        //FloatingButton add Fragment
         public void addClick(View view) {
             timerFragment = new TimerFragment();
             settingsFragment = new SettingsFragment();
@@ -88,6 +87,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             fragmentTransactionTim2.commit();
         }
 
+
         public void deleteTimer (int id, TimerFragment timerFragment) {
             FragmentTransaction fragmentTransactionTim3 = getSupportFragmentManager().beginTransaction();
             TimerFragment timF;
@@ -95,7 +95,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                 if (id == 0) {
                     int size = listOfTim.size();
                     for (int i = 0; i < size - 1; i++) {
-                        setTimFragment(i + 1, i);
+                        setTimerFragment(i + 1, i);
                         listOfTim.get(i).setChronometer();
                     }
                     timF = listOfTim.get(size - 1);
@@ -122,22 +122,33 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             }
         }
 
-        //Funkcja umozliwiająca zmianę nazwy oraz wartości timera
+
+        //Set name and timer value
         String nameTimer;
         @Override
         public void onInputNameSent(String name, String minutesStr, int id) {
-            if(minutesStr != null){
+
+            if(minutesStr != null){                             // Set Timer Value (minutes)
+                int minutes = 0;
                 TimerFragment timerFragmentBufor = listOfTim.get(id);
-                int minutes = Integer.parseInt(minutesStr);
-                timerFragmentBufor.setTimerValue(minutes);
+                try{
+                minutes = Integer.parseInt(minutesStr);
+                }
+                catch(Exception ex){
+                    Toast.makeText(this, "Only numbers!",Toast.LENGTH_SHORT).show();
+                }
+                timerFragmentBufor.setTimerSeconds(minutes*60);
             }
-            if(name != null){
+
+            if(name != null){                               //  Set name
             nameTimer = name;
             TimerFragment timerFragmentBuffor = listOfTim.get(id);
             timerFragmentBuffor.setName(name);}
         }
 
-        // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML
+
+
+        //  First Fragment is create by .XML layout, setFragment() let to catch this Fragment
     Boolean firstFragment = false;
         public void setFragment(TimerFragment timerFragment) {
 
@@ -146,10 +157,6 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                     listOfTim.add(0, new TimerFragment());
                     listOfTim.set(0, timerFragment);
                 }
-                /*if (listOfTim.size() == 0) {
-                    listOfTim.add(timerFragment);    // Dodanie pierwszego fragmentu do listy
-                }*/
-
             }
             firstFragment = true;
         }
@@ -161,8 +168,6 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             inst = this;
             //loadData();
         }
-
-
 
         @Override
         protected void onPause(){
@@ -228,9 +233,6 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             ArrayList<Integer> countDownSecondsValue = new ArrayList<>();
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             amountOfTimers = sharedPref.getInt("amount_timers", 1);
-            Toast.makeText(this, ("Load timers:" + amountOfTimers), Toast.LENGTH_LONG).show();
-            //  set usage values
-
 
             Gson gson = new Gson();
             String json = sharedPref.getString("key_names", null);
@@ -263,7 +265,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                 int size = amountOfTimers;
                 for (int i = 0 ; i < size; i++) {
                     //if(countDownTabTim == null){countDownTabTim[i] = 125;}
-                    if(i==0){       //Przypisanie parametrów dla pierwszego Fragment'u stworzonego przez odwołanie .XML
+                    if(i==0){       //Write values for first fragment
                         TimerFragment tim = listOfTim.get(0);
                         tim.setName(listOfNamesTim.get(0));
                         tim.running = listOfBoolTim.get(0);
@@ -271,7 +273,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                         tim.clockSum = clockSumTabTim[0];
                         //tim.setTimerValue(countDownSecondsValue.get(0));
                         tim.countDownValueSeconds = countDownSecondsValue.get(0);
-                        tim.setTimerTextviewSeconds((int)(countDownSecondsValue.get(0) - (clockSumTabTim[0]/1000)));
+                        tim.setTimerSeconds((int)(countDownSecondsValue.get(0) - (clockSumTabTim[0]/1000)));
                     }
                     else {
                         int secondsValue = ((int)(countDownSecondsValue.get(i) - (clockSumTabTim[i]/1000)));        // Valeu on TextView Timer
@@ -281,8 +283,9 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             }
         }
 
-        // Funkcja umożliwiająca przeniesienie parametrów Stopera(Fragment'u)
-        void setTimFragment(int fromID, int toID){
+
+        //  Move values from Fragment to other one
+        void setTimerFragment(int fromID, int toID){
             TimerFragment timBuf1, timBuf2;
             timBuf1 = listOfTim.get(fromID);
             timBuf2 = listOfTim.get(toID);
@@ -295,15 +298,14 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
             timBuf2.clockSum = timBuf1.clockSum;
         }
 
+
         public static TimerActivity instance(){
             return inst;
         }
 
 
-
         ArrayList<Long> endTimersList = new ArrayList<>();
     public void setEndTimers(int id, long endTimer){
-
         do{
             endTimersList.add(0L);
         }
@@ -320,7 +322,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         //  set lowest endtimer clock on long firstAlarmClock and return id of this Fragment
     public void setLowestEndTimer(){
         amountOfTimers = listOfTim.size();
-        for (int i = 0; i < amountOfTimers -1; i++){
+        for (int i = 0; i <= amountOfTimers; i++){
             if ((endTimersList.get(i) < firstAlarmClock) && (endTimersList.get(i) != 0)){
                 firstAlarmClock = endTimersList.get(i);
                 firstAlarmClockID = i;
@@ -363,15 +365,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
     }
 
 
-    void alarmStop(){
-        /*if(mediaPlayer == null){mediaPlayer = MediaPlayer.create(this, alarmUri);}
-        mediaPlayer.stop();*/
-        //showAlarmFragment(false);
-        //mediaPlayer.setLooping(false);
-        //mediaPlayer.pause();
-        //mediaPlayer.stop();
-        //Toast.makeText(this, "Stop!", Toast.LENGTH_SHORT).show();
-    }
+
 
 
     void showAlarmFragment(Boolean show){
@@ -415,44 +409,14 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
     }
 
 
-    void startThreadClass(){
-        //Toast.makeText(this, "Background", Toast.LENGTH_SHORT).show();
-        new ThreadClass().execute();
-    }
 
-    //Work in background
-    private class ThreadClass extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-          /*  do{
-                /*
-                if((System.currentTimeMillis() >= endTimer) && (System.currentTimeMillis() < endTimer + 100)){
-                    //Toast.makeText(, "Stop!", Toast.LENGTH_SHORT).show();
-                }*/
-/*
-                if(endTimer != 0){
-                    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                    Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-                    intent.putExtra("power", true);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 1, intent, 0);
-                    long milis = endTimer;
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, (milis+2000), pendingIntent);
-                }*
-
-            }
-            while (System.currentTimeMillis() < endTimer + 1000);*/
-            return null;
-        }
-    }
 
 String serializedObject(TimerActivity o){
     GsonBuilder gsonBuilder = new GsonBuilder();
     Gson gson2 = gsonBuilder.create();
 
     String json2 = gson2.toJson(o);
-            //gsonBuilder.excludeFieldsWithoutExposeAnnotation().create().toJson(o);
-    //editor.putString("timerActivity", json);
     return json2;
 }
 

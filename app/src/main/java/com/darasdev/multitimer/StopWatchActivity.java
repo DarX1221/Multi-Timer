@@ -1,4 +1,4 @@
-package com.example.multitimer;
+package com.darasdev.multitimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -49,6 +48,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         stopWatchFragment.clockSum = clockSum;
     }
 
+
     public void addClick(View view) {
         String nameStopWatchFragment = String.format("stopWatchFragment%d", lengthOfList);
         stopWatchFragment = new StopWatchFragment();
@@ -63,6 +63,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         fragmentTransaction2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction2.commit();
     }
+
 
     public void deleteTimer (int id, StopWatchFragment stopWatchFragment) {
         FragmentTransaction fragmentTransaction3 = getSupportFragmentManager().beginTransaction();
@@ -79,7 +80,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                 listOfSW.remove(swF);
                 fragmentTransaction3.remove(swF);
 
-            } else {  // Usunięcie Fragmentu Stopera (id!=0)
+            } else {
                 fragmentTransaction3.remove(stopWatchFragment);
 
                 swF = listOfSW.get(id);
@@ -99,7 +100,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     }
 
 
-    //Funkcja umozliwiająca zmianę nazwy pierwszego timera(id=0)
+    //Set name and timer value
     String nameTimer;
     @Override
     public void onInputNameSent(String input, int id) {
@@ -107,18 +108,15 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         StopWatchFragment nameChanger = listOfSW.get(id);
         nameChanger.setName(input);
     }
-    //Test
 
 
-    // Funkcja umożliwiająca zmianę nazwy pierwszego timera, wywołanego z kodu .XML
+
+    //  First Fragment is create by .XML layout, setFragment() let to catch this Fragment
     Boolean firstFragment = false;
     public void setFragment(StopWatchFragment stopWatchFragment) {
-        Toast.makeText(this, "SetFragment", Toast.LENGTH_SHORT).show();
         if(!firstFragment) {
-            if (listOfSW.size() == 0) {
-                listOfSW.add(stopWatchFragment);    // Dodanie pierwszego fragmentu do listy
-            }
-            if (listOfSW.size() == 1) {
+            if (listOfSW.size() <= 1) {
+                listOfSW.add(0, stopWatchFragment);
                 listOfSW.set(0, stopWatchFragment);
             }
         }
@@ -129,7 +127,6 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     @Override
     protected void onStart(){
         super.onStart();
-        //loadData();
     }
 
     @Override
@@ -182,7 +179,6 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
 
     public void loadData(){
-        Toast.makeText(this, "Load", Toast.LENGTH_LONG).show();
         ArrayList<String> listOfNames = new ArrayList<>();
         ArrayList<Boolean> listOfBool = new ArrayList<>();
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);

@@ -1,4 +1,4 @@
-package com.example.multitimer;
+package com.darasdev.multitimer;
 
 import android.app.Application;
 import android.app.NotificationChannel;

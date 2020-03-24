@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <fragment
-                class="com.example.multitimer.TimerFragment"
+                class="com.darasdev.multitimer.TimerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/timer_fragment"

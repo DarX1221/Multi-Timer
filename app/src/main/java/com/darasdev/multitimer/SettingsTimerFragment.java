@@ -1,4 +1,4 @@
-package com.example.multitimer;
+package com.darasdev.multitimer;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,7 +21,6 @@ public class SettingsTimerFragment extends Fragment {
 
     public interface FragmentNameListenerTimer {
         void onInputNameSent(String input, String minutes, int id);
-        //void onInputTimerSent(String minutes, int id);
     }
 
     @Override
@@ -31,12 +30,14 @@ public class SettingsTimerFragment extends Fragment {
         editText = view.findViewById(R.id.editText);
         setTimerEditText = view.findViewById(R.id.set_timer_edittext);
 
-        //  Przypisanie przycisków, listener'ów oraz funkcji wywołanych po kliknięciu
+        //  Set buttons and listener's
         //  Button set timer
         setTimerButton = view.findViewById(R.id.set_timer_button);
         setTimerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //int minutes = setTimerEditText.getI
+
                 String minutes = setTimerEditText.getText().toString();
                 listener.onInputNameSent(null, minutes, getID()); }});
 
@@ -70,12 +71,6 @@ public class SettingsTimerFragment extends Fragment {
             if(name != null){
             String nameBufor = editText.getText().toString();
             listener.onInputNameSent(nameBufor, null, id);} }
-/*
-        @Override
-        public void onInputTimerSent(String minutes, int id) {
-            String timer = editText.getText().toString();
-            //int minutes = Integer.parseInt(timer);
-            listener.onInputNameSent(timer, id); }*/
     };
 
 

@@ -1,4 +1,4 @@
-package com.example.multitimer;
+package com.darasdev.multitimer;
 
 import android.os.Bundle;
 
@@ -9,13 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AlarmFragment extends Fragment implements View.OnClickListener{
+public class AlarmFragment extends Fragment {
     TextView textViewAlarm;
     TimerActivity timerActivity;
 
@@ -29,7 +28,6 @@ public class AlarmFragment extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
         Button offAlarm = (Button) view.findViewById(R.id.button_turnoff_alarm);
-        offAlarm.setOnClickListener(this);
 
         textViewAlarm = view.findViewById(R.id.alarm_name_text_view);
         setAlarmName();
@@ -50,10 +48,5 @@ public class AlarmFragment extends Fragment implements View.OnClickListener{
         textViewAlarm.setText(name);
     }
 
-    @Override
-    public void onClick(View v) {
-        if(v.getId() == R.id.button_turnoff_alarm){
-            timerActivity.alarmStop();
-        }
-    }
+
 }
