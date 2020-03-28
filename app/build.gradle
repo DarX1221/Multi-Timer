@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.multitimer"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -25,6 +25,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "androidx.viewpager:viewpager:1.0.0"
+    implementation 'com.r0adkll:slidableactivity:2.1.0'
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

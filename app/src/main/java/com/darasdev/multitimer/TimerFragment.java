@@ -1,29 +1,35 @@
 package com.darasdev.multitimer;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class TimerFragment extends Fragment
-        implements View.OnClickListener{
+        implements View.OnClickListener, View.OnTouchListener{
     boolean running = false;
     String nameTimer = "Name Timer";
     TextView textView;
     TextView timerValue;
     TimerActivity timerActivity;
+
+
+    private float mLastScaleFactor = 0;
+    private float mTouchY;
 
 
     @Override
@@ -61,8 +67,20 @@ public class TimerFragment extends Fragment
             timerValue.setText(timerStringTime);
         }
         setEndTimerInActivity();
+
+        //  TouchListener to swipe Activities   setOnClickListener will work (case MotionEvent.ACTION_BUTTON_PRESS:)
+        view.setOnTouchListener(this);
+        startButton.setOnTouchListener(this);
+        stopButton.setOnTouchListener(this);
+        resetButton.setOnTouchListener(this);
+        setButton.setOnTouchListener(this);
+        textView.setOnTouchListener(this);
+        timerValue.setOnTouchListener(this);
+
+
         return view;
     }
+
 
     @Override
     public void onClick(View view) {
@@ -236,6 +254,48 @@ public class TimerFragment extends Fragment
             TimerActivity timerAct = getTimerActivity();
             timerAct.deleteTimer(getID(), this);
         }
+
+
+
+    float x1, x2, y1, y2, xm, ym;
+    float touchSenstitivy = 100;
+    boolean shouldClick =true;
+    // @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                y1 = event.getY();
+                shouldClick = true;
+                break;
+
+            case MotionEvent.ACTION_UP:
+                if(shouldClick){
+                    v.performClick();
+                }
+                x2 = event.getX();
+                y2 = event.getY();
+                break;
+
+            case MotionEvent.ACTION_BUTTON_PRESS:
+        }
+
+        timerActivity.TVx1.setText(Float.toString(x1));
+        timerActivity.TVy1.setText(Float.toString(y1));
+        timerActivity.TVx2.setText(Float.toString(x2));
+        timerActivity.TVy2.setText(Float.toString(y2));
+
+        if((x1 != x2) & (x1 > x2 + touchSenstitivy)){
+            timerActivity.openAnotherActivity(true, false);
+            //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
+        }
+        if((x1 != x2) & (x1 + touchSenstitivy< x2)){
+            //Toast.makeText(getContext(), "Right", Toast.LENGTH_SHORT).show();
+            timerActivity.openAnotherActivity(false, true);
+        }
+        return true;
+    }
 
 }
 

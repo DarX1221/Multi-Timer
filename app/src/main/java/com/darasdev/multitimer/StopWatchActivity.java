@@ -4,9 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -14,7 +17,10 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+
+
 public class StopWatchActivity extends AppCompatActivity implements SettingsFragment.FragmentNameListener {
+
     ArrayList<StopWatchFragment> listOfSW = new ArrayList();
     int lengthOfList = listOfSW.size();
     int amountOfTimers = 0;
@@ -24,8 +30,44 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
         loadData();
+
     }
 
+    float touchSenstitivy = 100;
+    float x1, x2, y1, y2;
+    public boolean onTouchEvent (MotionEvent touchevent){
+        switch (touchevent.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                x1 = touchevent.getX();
+                y1 = touchevent.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = touchevent.getX();
+                y2 = touchevent.getY();
+                if(x1 > x2 + touchSenstitivy){
+                    openAnotherActivity(true, false);
+                }
+                if(x1 < x2 - touchSenstitivy){
+                    openAnotherActivity(false, true);
+                }
+                break;
+        }
+        return false;
+    }
+
+
+    void openAnotherActivity(Boolean left, Boolean right){
+        if(left){
+            Intent intent = new Intent(StopWatchActivity.this, TimerActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }
+        if(right){
+            Intent intent = new Intent(this, TimerActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+    }
 
 
     StopWatchFragment stopWatchFragment;
@@ -241,6 +283,19 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         swBuf2.clockStart = swBuf1.clockStart;
         swBuf2.clockSum = swBuf1.clockSum;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

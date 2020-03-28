@@ -26,5 +26,10 @@
         android:onClick="addClickTimer"
         android:textSize="@android:dimen/app_icon_size"/>
 
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 </RelativeLayout>

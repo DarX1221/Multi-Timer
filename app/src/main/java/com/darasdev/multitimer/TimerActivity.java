@@ -16,7 +16,9 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -36,6 +38,17 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
     int lengthOfListTim = listOfTim.size();
     private static TimerActivity inst;
     int amountOfTimers;
+    TextView TVx1;
+    TextView TVx2;
+    TextView TVy1;
+    TextView TVy2;
+    TextView TVxm;
+    TextView TVym;
+
+
+
+
+
 
 
     @Override
@@ -43,7 +56,16 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         loadData();
+
+         TVx1 = (TextView) findViewById(R.id.x1);
+         TVy1 = (TextView) findViewById(R.id.y1);
+         TVx2 = (TextView) findViewById(R.id.x2);
+         TVy2 = (TextView) findViewById(R.id.y2);
+         TVxm = (TextView) findViewById(R.id.xm);
+         TVym = (TextView) findViewById(R.id.ym);
     }
+
+
 
 
         TimerFragment timerFragment;
@@ -282,6 +304,45 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                 }
             }
         }
+
+
+    float x1, x2, y1, y2;
+    float touchSenstitivy = 100;
+    public boolean onTouchEvent (MotionEvent touchevent){
+
+        switch (touchevent.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                x1 = touchevent.getX();
+                y1 = touchevent.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = touchevent.getX();
+                y2 = touchevent.getY();
+                if(x1 > x2 + touchSenstitivy){
+                    openAnotherActivity(true, false);
+                }
+
+                if(x1 < x2 - touchSenstitivy){
+                    openAnotherActivity(false, true);
+                }
+                break;
+        }
+        return false;
+    }
+
+
+    void openAnotherActivity(Boolean left, Boolean right){
+        if(left){
+            Intent intent = new Intent(this, StopWatchActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }
+        if(right){
+            Intent intent = new Intent(this, StopWatchActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+    }
 
 
         //  Move values from Fragment to other one

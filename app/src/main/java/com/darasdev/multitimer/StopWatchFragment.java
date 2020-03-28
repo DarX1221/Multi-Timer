@@ -1,5 +1,6 @@
 package com.darasdev.multitimer;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,13 +8,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-public class StopWatchFragment extends Fragment implements View.OnClickListener{
+public class StopWatchFragment extends Fragment implements View.OnClickListener, View.OnTouchListener{
     boolean running = false;
     String nameTimer = "Name Timer";
     TextView textView;
@@ -45,8 +48,53 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener{
         stopWatchActivity = (StopWatchActivity) getActivity();
         stopWatchActivity.setFragment(this);
 
+
+        //  TouchListener to swipe Activities   setOnClickListener will work (case MotionEvent.ACTION_BUTTON_PRESS:)
+        view.setOnTouchListener(this);
+        startButton.setOnTouchListener(this);
+        stopButton.setOnTouchListener(this);
+        resetButton.setOnTouchListener(this);
+        setButton.setOnTouchListener(this);
+        textView.setOnTouchListener(this);
+        stopWatchValue.setOnTouchListener(this);
+
         return view;
     }
+
+
+    private float x1, x2, y1, y2, xm, ym;
+    private float touchSenstitivy = 100;
+    boolean shouldClick =true;
+    // @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                y1 = event.getY();
+                shouldClick = true;
+                break;
+
+            case MotionEvent.ACTION_UP:
+                if(shouldClick){
+                    v.performClick();
+                }
+                x2 = event.getX();
+                y2 = event.getY();
+                break;
+
+            case MotionEvent.ACTION_BUTTON_PRESS:
+        }
+
+        if((x1 > x2 + touchSenstitivy)){
+            stopWatchActivity.openAnotherActivity(true, false);
+        }
+        if((x1 + touchSenstitivy < x2)){
+            stopWatchActivity.openAnotherActivity(false, true);
+        }
+        return true;
+    }
+
 
     @Override
     public void onClick(View view) {
