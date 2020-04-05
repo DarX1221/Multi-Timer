@@ -63,7 +63,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
 
 
     private float x1, x2, y1, y2, xm, ym;
-    private float touchSenstitivy = 100;
+    private float touchSenstitivy = 75;
     boolean shouldClick =true;
     // @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -85,7 +85,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
 
             case MotionEvent.ACTION_BUTTON_PRESS:
         }
-        Toast.makeText(getContext(), x1 + "  " + x2,Toast.LENGTH_SHORT).show();
+
         if((x1 > x2) & (x1 > x2 + touchSenstitivy) & (x2 != 0)){
             stopWatchActivity.openAnotherActivity(true, false);
         }

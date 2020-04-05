@@ -253,7 +253,7 @@ public class TimerFragment extends Fragment
 
 
     float x1, x2, y1, y2;
-    float touchSenstitivy = 100;
+    float touchSenstitivy = 75;
     boolean shouldClick =true;
     // @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -275,7 +275,7 @@ public class TimerFragment extends Fragment
 
             case MotionEvent.ACTION_BUTTON_PRESS:
         }
-        Toast.makeText(getContext(), x1 + "  " + x2,Toast.LENGTH_SHORT).show();
+
         if((x1 > x2) & (x1 > x2 + touchSenstitivy) & (x2 != 0)){
             timerActivity.openAnotherActivity(true, false);
             //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
