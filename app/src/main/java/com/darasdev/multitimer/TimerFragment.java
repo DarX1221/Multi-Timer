@@ -245,11 +245,6 @@ public class TimerFragment extends Fragment
         }
 
 
-
-
-
-
-
         public void deleteTimer(){
             TimerActivity timerAct = getTimerActivity();
             timerAct.deleteTimer(getID(), this);
@@ -257,7 +252,7 @@ public class TimerFragment extends Fragment
 
 
 
-    float x1, x2, y1, y2, xm, ym;
+    float x1, x2, y1, y2;
     float touchSenstitivy = 100;
     boolean shouldClick =true;
     // @Override
@@ -280,20 +275,16 @@ public class TimerFragment extends Fragment
 
             case MotionEvent.ACTION_BUTTON_PRESS:
         }
-
-        timerActivity.TVx1.setText(Float.toString(x1));
-        timerActivity.TVy1.setText(Float.toString(y1));
-        timerActivity.TVx2.setText(Float.toString(x2));
-        timerActivity.TVy2.setText(Float.toString(y2));
-
-        if((x1 != x2) & (x1 > x2 + touchSenstitivy)){
+        Toast.makeText(getContext(), x1 + "  " + x2,Toast.LENGTH_SHORT).show();
+        if((x1 > x2) & (x1 > x2 + touchSenstitivy) & (x2 != 0)){
             timerActivity.openAnotherActivity(true, false);
             //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
         }
-        if((x1 != x2) & (x1 + touchSenstitivy< x2)){
+        if((x1 < x2) & (x1 + touchSenstitivy< x2) & (x2 != 0)){
             //Toast.makeText(getContext(), "Right", Toast.LENGTH_SHORT).show();
             timerActivity.openAnotherActivity(false, true);
         }
+
         return true;
     }
 

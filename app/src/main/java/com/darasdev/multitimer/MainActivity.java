@@ -51,10 +51,13 @@ public class MainActivity extends AppCompatActivity {
     void stopWatchActivityStart(){
         Intent intent = new Intent(this, StopWatchActivity.class);
         startActivity(intent);
+        finish();
     }
     void timerActivityStart(){
         Intent intent = new Intent(this, TimerActivity.class);
+
         startActivity(intent);
+        finish();
 
     }
 

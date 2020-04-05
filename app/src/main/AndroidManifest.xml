@@ -14,10 +14,13 @@
 
         <activity
             android:name=".StopWatchActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity
             android:name=".TimerActivity"
-            android:launchMode="singleInstance" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
+            android:noHistory="true"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleInstance"

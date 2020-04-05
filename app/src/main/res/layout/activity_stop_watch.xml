@@ -29,28 +29,20 @@
             android:id="@+id/floatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="30dp"
             android:clickable="true"
-            android:gravity="bottom"
             android:onClick="addClick"
-            app:backgroundTint="@color/colorAccent"
+            app:backgroundTint="@color/colorPrimary"
             app:elevation="6dp"
             app:fabSize="auto"
             app:hoveredFocusedTranslationZ="6dp"
             app:pressedTranslationZ="6dp"
-            app:srcCompat="@drawable/ic_add_black_48dp" />
+            app:srcCompat="@drawable/ic_add_white" />
 
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
 
 
 

@@ -57,12 +57,6 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         setContentView(R.layout.activity_timer);
         loadData();
 
-         TVx1 = (TextView) findViewById(R.id.x1);
-         TVy1 = (TextView) findViewById(R.id.y1);
-         TVx2 = (TextView) findViewById(R.id.x2);
-         TVy2 = (TextView) findViewById(R.id.y2);
-         TVxm = (TextView) findViewById(R.id.xm);
-         TVym = (TextView) findViewById(R.id.ym);
     }
 
 
@@ -200,6 +194,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
         }
 
 
+
         void saveData(){
             amountOfTimers = listOfTim.size();
             ArrayList<String> listOfNamesTim = new ArrayList<>();
@@ -293,7 +288,6 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
                         tim.running = listOfBoolTim.get(0);
                         tim.clockStart = clockStartTabTim[0];
                         tim.clockSum = clockSumTabTim[0];
-                        //tim.setTimerValue(countDownSecondsValue.get(0));
                         tim.countDownValueSeconds = countDownSecondsValue.get(0);
                         tim.setTimerSeconds((int)(countDownSecondsValue.get(0) - (clockSumTabTim[0]/1000)));
                     }
@@ -331,6 +325,7 @@ public class TimerActivity extends AppCompatActivity implements SettingsTimerFra
     }
 
 
+    StopWatchActivity stopWatchActivity = new StopWatchActivity();
     void openAnotherActivity(Boolean left, Boolean right){
         if(left){
             Intent intent = new Intent(this, StopWatchActivity.class);
