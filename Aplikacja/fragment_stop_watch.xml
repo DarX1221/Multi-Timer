@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".StopWatchFragment"
+    android:id="@+id/stop_watch_fragment"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/StopWatchFragmentColor">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="15dp"
+            android:layout_toStartOf="@+id/setting_button">
+
+            <TextView
+                android:id="@+id/stop_watch_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name of timer:"
+                android:textSize="25sp"
+                android:textColor="#ffffff"
+/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="   " />
+
+            <TextView
+                android:id="@+id/timer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:00"
+                android:textSize="30sp"
+                android:textColor="#ffffff"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/start_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_toStartOf="@+id/stop_button"
+                android:background="#00000000"
+                android:drawableTop="@drawable/ic_play" />
+            <Button
+                android:id="@+id/stop_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_toStartOf="@+id/reset_button"
+                android:background="#00000000"
+                android:drawableTop="@drawable/ic_pause" />
+            <Button
+                android:id="@+id/reset_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_toStartOf="@+id/setting_button"
+                android:background="#00000000"
+                android:drawableTop="@drawable/ic_refresh" />
+
+            <Button
+                android:id="@+id/setting_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="#00000000"
+                android:drawableTop="@drawable/ic_settings" />
+
+
+
+        </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/SettingsFragmentColor"
+                android:id="@+id/settings_container"/>
+
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
