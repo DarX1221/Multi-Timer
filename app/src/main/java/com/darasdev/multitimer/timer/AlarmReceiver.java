@@ -1,4 +1,4 @@
-package com.darasdev.multitimer;
+package com.darasdev.multitimer.timer;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -12,6 +12,9 @@ import android.net.Uri;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+
+import com.darasdev.multitimer.R;
+import com.darasdev.multitimer.timer.TimerActivity;
 
 import static com.darasdev.multitimer.App.CHANNEL_1_ID;
 

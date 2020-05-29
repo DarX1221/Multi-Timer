@@ -1,6 +1,5 @@
-package com.darasdev.multitimer;
+package com.darasdev.multitimer.stopwatch;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,14 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.darasdev.multitimer.R;
+import com.darasdev.multitimer.SettingsFragment;
 
 
 public class StopWatchFragment extends Fragment implements View.OnClickListener, View.OnTouchListener{
     boolean running = false;
     String nameTimer = "Name Timer";
     TextView textView;
-    TextView stopWatchValue;
+    TextView stopWatchValue, sumTextView;
     StopWatchActivity stopWatchActivity;
 
     @Override
@@ -39,6 +40,11 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         setButton.setOnClickListener(this);
         stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
         textView.setText(nameTimer);
+        sumTextView = (TextView) view.findViewById(R.id.sum_timer_text);
+        sumTextView.setText(secondsToTime(saveSeconds));
+
+
+
 
         //Uruchomienie funkcji Timer dla tego(this) fragmentu
         setTimer(clockSum);
@@ -62,6 +68,8 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
     }
 
 
+
+    // swipe screen(changing activity)
     private float x1, x2, y1, y2, xm, ym;
     private float touchSenstitivy = 75;
     boolean shouldClick =true;
@@ -96,24 +104,11 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
     }
 
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.start_button:
-                startChronometer(view);
-                break;
-            case R.id.stop_button:
-                stopChronometer(view);
-                break;
-            case R.id.reset_button:
-                resetChronometer(view);
-                break;
-            case R.id.setting_button:
-                openSettingFragment(view, this);
-                break;
-        }
-    }
 
+
+
+
+    // Engine of timer
     String stopWatchTime;
     int seconds;
     long clockNow, clockStop;
@@ -139,7 +134,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         });
     }
 
-
     String secondsToTime(int seconds2){
         int seconds = seconds2;
         int hours = seconds / 3600;
@@ -147,6 +141,25 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         int secs = seconds % 60;
         stopWatchTime = String.format("%02d:%02d:%02d", hours, minutes, secs);
         return stopWatchTime;
+    }
+
+    // React fo buttons ()
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.start_button:
+                startChronometer(view);
+                break;
+            case R.id.stop_button:
+                stopChronometer(view);
+                break;
+            case R.id.reset_button:
+                resetChronometer(view);
+                break;
+            case R.id.setting_button:
+                openSettingFragment(view, this);
+                break;
+        }
     }
 
     public void startChronometer(View view) {
@@ -163,6 +176,8 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         }
     }
     public void resetChronometer(View view) {
+        saveSeconds += seconds;
+        sumTextView.setText(secondsToTime(saveSeconds));
         running = false;
         clockSum = 0;
         seconds = 0;
@@ -175,6 +190,22 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         stopWatchValue.setText(stopWatchTime);
     }
 
+    int saveSeconds;
+    public void setSaveSeconds(int saveSeconds) {
+        this.saveSeconds = saveSeconds;
+    }
+    public void setSaveSecondsTextView(int saveSeconds) {
+        this.saveSeconds = saveSeconds;
+        sumTextView.setText(secondsToTime(saveSeconds));
+    }
+
+    public int getSaveSeconds(){
+        return saveSeconds;
+    }
+
+
+
+    // part responsible for sliding SettingsFragment
     boolean showSettings = true;
     SettingsFragment settingsFragment;
     public void openSettingFragment(View view, StopWatchFragment stopWatchFragment){
@@ -213,6 +244,8 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         //sAct.saveData();
     }
 
+
+    // each Fragment has own ID in Activity
     int idSW;
     public void setID(int id){   idSW = id;}
     public int getID(){     return idSW; }
@@ -224,7 +257,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
     public void deleteStopWatch(){
         StopWatchActivity swAct = getStopWatchActivity();
         swAct.deleteTimer(getID(), this);
-
     }
 
 }

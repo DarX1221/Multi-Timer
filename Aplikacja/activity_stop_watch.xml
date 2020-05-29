@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <fragment
-            class="com.darasdev.multitimer.StopWatchFragment"
+            class="com.darasdev.multitimer.stopwatch.StopWatchFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/stopwatch_fragment"

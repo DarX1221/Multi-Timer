@@ -1,4 +1,4 @@
-package com.darasdev.multitimer;
+package com.darasdev.multitimer.timer;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.darasdev.multitimer.R;
+import com.darasdev.multitimer.timer.TimerFragment;
 
 
 /**

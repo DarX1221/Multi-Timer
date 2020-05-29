@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StopWatchActivity">
+    tools:context=".stopwatch.StopWatchActivity">
 
 
 
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <fragment
-            class="com.darasdev.multitimer.StopWatchFragment"
+            class="com.darasdev.multitimer.stopwatch.StopWatchFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/stopwatch_fragment"
@@ -31,8 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
             android:clickable="true"
             android:onClick="addClick"
             app:backgroundTint="@color/colorPrimary"

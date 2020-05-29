@@ -1,13 +1,16 @@
 package com.darasdev.multitimer;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import com.darasdev.multitimer.stopwatch.StopWatchActivity;
+import com.darasdev.multitimer.sum.SumStopwatchActivity;
+import com.darasdev.multitimer.timer.TimerActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,8 +19,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        timerActivityStart();
-        //stopWatchActivityStart();
+        //timerActivityStart();
+        stopWatchActivityStart();
+        //sumStopWatchActivityStart();
 
     }
 
@@ -53,9 +57,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    void sumStopWatchActivityStart(){
+        Intent intent = new Intent(this, SumStopwatchActivity.class);
+
+        startActivity(intent);
+        finish();
+    }
+
     void timerActivityStart(){
         Intent intent = new Intent(this, TimerActivity.class);
-
         startActivity(intent);
         finish();
 

@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.darasdev.multitimer.timer.TimerFragment;
+
 public class SwipeAdapter extends FragmentStatePagerAdapter {
     public SwipeAdapter(FragmentManager fm) {
         super (fm);

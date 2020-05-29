@@ -1,4 +1,4 @@
-package com.darasdev.multitimer;
+package com.darasdev.multitimer.timer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +21,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.darasdev.multitimer.R;
+import com.darasdev.multitimer.SettingsFragment;
+import com.darasdev.multitimer.stopwatch.StopWatchActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

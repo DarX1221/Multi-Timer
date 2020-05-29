@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.darasdev.multitimer.stopwatch.StopWatchFragment;
+import com.darasdev.multitimer.timer.TimerFragment;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,7 +87,7 @@ public class SettingsFragment extends Fragment {
     }
 
     int idSet;
-    void setID(int id){
+    public void setID(int id){
         idSet = id;
     }
     public int getID(){
@@ -93,7 +96,7 @@ public class SettingsFragment extends Fragment {
 
     //  Switch type, Stopwatch = true, Timer = False
     Boolean type;
-    void setType(Boolean type){this.type = type;}
+    public void setType(Boolean type){this.type = type;}
     Boolean getType(){return type;}
 
     void deleteFragment(){

@@ -1,4 +1,4 @@
-package com.darasdev.multitimer;
+package com.darasdev.multitimer.stopwatch;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
+import com.darasdev.multitimer.R;
+import com.darasdev.multitimer.SettingsFragment;
+import com.darasdev.multitimer.timer.TimerActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,6 +35,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
     }
 
+    // swipe screen/activity
     float touchSenstitivy = 100;
     float x1, x2, y1, y2;
     public boolean onTouchEvent (MotionEvent touchevent){
@@ -56,7 +59,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     }
 
 
-    void openAnotherActivity(Boolean left, Boolean right){
+    public void openAnotherActivity(Boolean left, Boolean right){
         if(left){
             Intent intent = new Intent(StopWatchActivity.this, TimerActivity.class);
             startActivity(intent);
@@ -72,7 +75,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
     StopWatchFragment stopWatchFragment;
     SettingsFragment settingsFragment;
-    public void addSW(String name, Boolean running, long clockStart, long clockSum){
+    public void addSW(String name, Boolean running, long clockStart, long clockSum, int sumSeconds){
         stopWatchFragment = new StopWatchFragment();
         FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
         listOfSW.add(stopWatchFragment);
@@ -88,6 +91,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         stopWatchFragment.running = running;
         stopWatchFragment.clockStart = clockStart;
         stopWatchFragment.clockSum = clockSum;
+        stopWatchFragment.setSaveSeconds(sumSeconds);
     }
 
 
@@ -153,7 +157,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
 
 
-    //  First Fragment is create by .XML layout, setFragment() let to catch this Fragment
+    //  First Fragment is create by .XML layout of Activity, setFragment() let to catch this Fragment
     Boolean firstFragment = false;
     public void setFragment(StopWatchFragment stopWatchFragment) {
         if(!firstFragment) {
@@ -184,6 +188,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         int amountOfTimers = listOfSW.size();
         long[] clockSumTab = new long[amountOfTimers];
         long[] clockStartTab = new long[amountOfTimers];
+        int[] sumSecondsTab = new int[amountOfTimers];
 
         StopWatchFragment sw;
         for (int i = 0; i < amountOfTimers; i++) {
@@ -195,6 +200,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
             listOfBooleans.add(sw.running);
             clockStartTab[i] = sw.clockStart;
             clockSumTab[i] = sw.clockSum;
+            sumSecondsTab[i] = sw.getSaveSeconds();
 
         }
 
@@ -215,6 +221,9 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
         json = gson.toJson(clockSumTab);
         editor.putString("key_sum", json);
+
+        json = gson.toJson(sumSecondsTab);
+        editor.putString("sum_seconds_tab", json);
 
         editor.commit();
     }
@@ -237,6 +246,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
 
         long[] clockSumTab = new long[amountOfTimers];
         long[] clockStartTab = new long[amountOfTimers];
+        int[] sumSecondsTab = new int[amountOfTimers];
 
         json = sharedPref.getString("key_start", null);
         type = new TypeToken<long[]>() {}.getType();
@@ -245,6 +255,10 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         json = sharedPref.getString("key_sum", null);
         type = new TypeToken<long[]>() {}.getType();
         clockSumTab = gson.fromJson(json, type);
+
+        json = sharedPref.getString("sum_seconds_tab", null);
+        type = new TypeToken<int[]>() {}.getType();
+        sumSecondsTab = gson.fromJson(json, type);
 
 
         if((listOfNames != null)) { // && (listOfSW.size() != amountOfTimers)){
@@ -260,9 +274,11 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                 sw.clockStart = clockStartTab[0];
                 sw.clockSum = clockSumTab[0];
                 sw.setTimer(clockSumTab[0]);
+                sw.setSaveSeconds(sumSecondsTab[0]);
+                sw.setSaveSecondsTextView(sumSecondsTab[0]);
             }
             else {      //Stworzenie zapisanych Fragmentów
-                addSW(listOfNames.get(i), listOfBool.get(i), clockStartTab[i], clockSumTab[i]);
+                addSW(listOfNames.get(i), listOfBool.get(i), clockStartTab[i], clockSumTab[i], sumSecondsTab[i]);
             }
 
         }
@@ -282,6 +298,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         swBuf2.running = swBuf1.running;
         swBuf2.clockStart = swBuf1.clockStart;
         swBuf2.clockSum = swBuf1.clockSum;
+        swBuf2.setSaveSeconds(swBuf1.getSaveSeconds());
     }
 
 

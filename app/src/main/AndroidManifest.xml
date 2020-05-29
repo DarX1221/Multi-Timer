@@ -10,17 +10,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
+        <activity android:name=".sum.SumStopwatchActivity"></activity>
         <activity
-            android:name=".StopWatchActivity"
-            android:screenOrientation="portrait"
-            android:noHistory="true"/>
+            android:name=".stopwatch.StopWatchActivity"
+            android:label="Stopwatch"
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".TimerActivity"
-            android:screenOrientation="portrait"
+            android:name=".timer.TimerActivity"
+            android:label="Timer"
             android:launchMode="singleInstance"
-            android:noHistory="true"/>
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleInstance"
@@ -32,7 +33,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".AlarmReceiver" />
+        <receiver android:name=".timer.AlarmReceiver" />
     </application>
 
 </manifest>
