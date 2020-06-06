@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.alarm.Alarm;
-import com.darasdev.multitimer.alarm2.Alarm2;
 
 
 /**
@@ -53,7 +52,7 @@ public class TimerFragment extends Fragment
 
         textView.setText(nameTimer);
 
-        //Uruchomienie funkcji Timer dla tego(this) fragmentu
+        //Run timer in this Fragment
         runTimer(view);
 
         //  First Fragment is create by .XML layout, setFragment() let to catch this Fragment
@@ -101,7 +100,7 @@ public class TimerFragment extends Fragment
                 break;
             case R.id.timer_value_text:
                 openSettingFragment(view, this);
-                Alarm2.stopAlarm();
+                Alarm.stopAlarm();
                 break;
         }
     }
@@ -125,11 +124,14 @@ public class TimerFragment extends Fragment
                     secondsToTimeFormatString(countDownSeconds);
                     timerValue.setText(timerStringTime);
 
-                    if(countDownSeconds <= -1){
+                    if(countDownSeconds <= 0){
                         running = false;
 
                         timerStringTime = secondsToTimeFormatString(0);
-                        timerValue.setText(timerStringTime);}
+                        timerValue.setText(timerStringTime);
+
+                        timerActivity.alarmStart();
+                    }
                 }
                 handler.postDelayed(this, 100);         // delayMillis set refresh rate of timer
             }
@@ -137,7 +139,12 @@ public class TimerFragment extends Fragment
         });
     }
 
-        //      Convert seconds to String format 00:00:00
+
+    /**
+     * Convert seconds to String format 00:00:00
+     * @param seconds2
+     * @return
+     */
     String secondsToTimeFormatString(int seconds2){
         int seconds = seconds2;
         int hours = seconds / 3600;
@@ -154,7 +161,6 @@ public class TimerFragment extends Fragment
             timerEndClock = clockStart + (countDownValueSeconds * 1000);
 
             timerActivity.setEndTimers(getID(), timerEndClock);
-            timerActivity.setAlarm(timerEndClock);
         }
     }
     public void stopChronometer(View view) {
@@ -163,7 +169,7 @@ public class TimerFragment extends Fragment
             clockStop = System.currentTimeMillis();
             clockSum = clockSum + clockStop - clockStart;
         }
-        Alarm2.stopAlarm();
+        Alarm.stopAlarm();  // clicking pause just turn off alarm
     }
     public void resetChronometer(View view) {
         running = false;
@@ -172,7 +178,7 @@ public class TimerFragment extends Fragment
         timerStringTime = "00:00:00";
         timerValue.setText(timerStringTime);
 
-        Alarm2.stopAlarm();
+        Alarm.stopAlarm();  // clicking reset just turn off alarm
     }
 
 
@@ -255,7 +261,7 @@ public class TimerFragment extends Fragment
         }
 
 
-
+    // swipe screen(changing activity)
     float x1, x2, y1, y2;
     float touchSenstitivy = 75;
     boolean shouldClick =true;

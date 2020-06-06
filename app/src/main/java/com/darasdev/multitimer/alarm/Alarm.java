@@ -1,53 +1,73 @@
 package com.darasdev.multitimer.alarm;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.nfc.Tag;
-import android.os.Parcel;
-import android.os.PowerManager;
-import android.widget.Toast;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Handler;
 
-    public class Alarm extends BroadcastReceiver
-    {
-        PowerManager.WakeLock wl;
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            Tag tag = null;
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            //PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ON_AFTER_RELEASE, "");
-                    //new WakeLock(PowerManager.PARTIAL_WAKE_LOCK, "All");
 
-            wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "DoNjfdhotDimScreen");
-            wl.acquire();
 
-            // Put here YOUR code.
-            Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show(); // For example
+public class Alarm {
+    public static final Alarm INSTANCCE = new Alarm();
 
-            wl.release();
+    private Alarm(){}
+    public static Alarm getInstance() {
+        return INSTANCCE;
+    }
+
+    static MediaPlayer mediaPlayer;
+    static final Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+
+
+    /**
+     * The Alarm sounds until it stops by mediaPlayer.stop()
+     * @param context
+     */
+    public void alarmSound(Context context) {
+        mediaPlayer = MediaPlayer.create(context, alarmUri);
+        mediaPlayer.start();
+    }
+
+
+    /**
+     * The Alarm is turn on for X seconds
+     * @param context
+     * @param seconds
+     */
+    public void playalarmSoundForXSeconds(Context context, int seconds) {
+
+            try {
+                mediaPlayer = MediaPlayer.create(context, alarmUri);
+                mediaPlayer.start();
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    try {
+                        mediaPlayer.stop();
+                    }catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, seconds * 1000);
         }
 
-        public void setAlarm(Context context)
-        {
-            AlarmManager am =( AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-            Intent i = new Intent(context, Alarm.class);
-            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
-            //am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * 10, pi); // Millisec * Second * Minute
-            onReceive(context, i);
-        }
 
-        public void cancelAlarm(Context context)
-        {
-            Intent intent = new Intent(context, Alarm.class);
-            PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            alarmManager.cancel(sender);
+
+    public static void stopAlarm() {
+
+
+        try {
+            mediaPlayer.stop();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
 
-
-
+}

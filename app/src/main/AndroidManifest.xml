@@ -14,18 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".alarm.AlarmService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":alarm_service"></service>
 
-        <service android:name=".alarm2.RingtonePlayerService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":alarm_service"/>
 
         <activity android:name=".sum.SumStopwatchActivity" />
+
         <activity
             android:name=".stopwatch.StopWatchActivity"
             android:label="Stopwatch"
@@ -34,10 +26,10 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".timer.TimerActivity"
             android:label="Timer"
@@ -48,26 +40,13 @@
             android:name=".MainActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
 
 
-        <receiver android:name=".alarm2.MyReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":alarm_service">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            </intent-filter>
-        </receiver>
 
 
-        <receiver android:name=".timer.AlarmReceiver" />
+
     </application>
 
 

@@ -37,11 +37,6 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         setContentView(R.layout.activity_stop_watch);
         loadData();
 
-        //  TEST!!!
-        Intent intent = new Intent(this, TimerActivity.class);
-        startActivity(intent);
-        finish();
-
     }
 
     // swipe screen/activity

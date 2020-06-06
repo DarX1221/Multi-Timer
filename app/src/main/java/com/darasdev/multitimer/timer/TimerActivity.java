@@ -6,18 +6,12 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -25,16 +19,10 @@ import android.widget.Toast;
 
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.SettingsFragment;
-
 import com.darasdev.multitimer.alarm.Alarm;
-import com.darasdev.multitimer.alarm.AlarmService;
-import com.darasdev.multitimer.alarm.AutoStart;
-import com.darasdev.multitimer.alarm2.Alarm2;
-import com.darasdev.multitimer.alarm2.MyReceiver;
 
 import com.darasdev.multitimer.stopwatch.StopWatchActivity;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -66,13 +54,12 @@ public class TimerActivity extends AppCompatActivity
         loadData();
         stopAlarm();
 
-        //  TEST!!!
-        //addTimer("Test", false, System.currentTimeMillis(), 0, 10 );
+        //addTimer("Test",false, System.currentTimeMillis(), 0, 10);
 
     }
 
     void stopAlarm(){
-        Alarm2.stopAlarm();
+        Alarm.stopAlarm();
     }
 
 
@@ -125,7 +112,7 @@ public class TimerActivity extends AppCompatActivity
         FragmentTransaction fragmentTransactionTim3 = getSupportFragmentManager().beginTransaction();
         TimerFragment timF;
         if ((listOfTim.size() > 1)) {
-            if (id == 0) {
+            if (id == 0) {  // Delete (set zero's) first Fragment
                 int size = listOfTim.size();
                 for (int i = 0; i < size - 1; i++) {
                     setTimerFragment(i + 1, i);
@@ -136,7 +123,7 @@ public class TimerActivity extends AppCompatActivity
                 fragmentTransactionTim3.remove(timF);
                 listOfTim.remove(timF);
 
-            } else {  // Usunięcie Fragmentu Stopera (id!=0)
+            } else {  // Delete rest Fragment's (id!=0)
                 fragmentTransactionTim3.remove(timerFragment);
 
                 timF = listOfTim.get(id);
@@ -145,7 +132,7 @@ public class TimerActivity extends AppCompatActivity
                 lengthOfListTim = listOfTim.size();
 
 
-                for (int i = 0; i < lengthOfListTim; i++) { //zamiana id Fragment'ów
+                for (int i = 0; i < lengthOfListTim; i++) { //change ID of Fragment's
                     timF = listOfTim.get(i);
                     timF.setID(i);
                 }
@@ -203,7 +190,11 @@ public class TimerActivity extends AppCompatActivity
         stopAlarm();
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveData();
+    }
 
 
     void saveData() {
@@ -294,10 +285,9 @@ public class TimerActivity extends AppCompatActivity
         clockSumTabTim = gson.fromJson(json, type);
 
 
-        if (listOfNamesTim != null) { // && (listOfTim.size() != amountOfTimers)){
+        if (listOfNamesTim != null) {
             int size = amountOfTimers;
             for (int i = 0; i < size; i++) {
-                //if(countDownTabTim == null){countDownTabTim[i] = 125;}
                 if (i == 0) {       //Write values for first fragment
                     TimerFragment tim = listOfTim.get(0);
                     tim.setName(listOfNamesTim.get(0));
@@ -409,138 +399,40 @@ public class TimerActivity extends AppCompatActivity
 
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        saveData();
-        long now = System.currentTimeMillis();
-        long buf = firstAlarmClock - now;
-        Toast.makeText(this, "Pause \n" + buf, Toast.LENGTH_LONG).show();
-        //setNotificationAlarm();
-    }
-
-
-    static final int REQUEST_CODE = 101;
-    static Intent alarmIntent;
-    void setAlarm(long time) {
-
-
-        alarmIntent = new Intent(this, MyReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(TimerActivity.this, REQUEST_CODE, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     void alarmStart() {
 
+        // Alarm soun
+        Alarm al = Alarm.getInstance();
+        al.playalarmSoundForXSeconds(this, 30);
 
-
-        Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-
-        //   SEt notification
+        //  Create Notification
         Intent activityIntent = new Intent(this, TimerActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this,
                 0, activityIntent, 0);
         notificationManager = NotificationManagerCompat.from(this);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("Click me to open timers2222")
+                .setContentTitle("Click reset or pause to turn off alarm")
+                .setContentText("Click me to open timers")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setContentIntent(contentIntent)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setContentIntent(PendingIntent.getActivity(this, 0, activityIntent, 0))
                 .setVibrate(new long[]{1000, 1000, 1000})
-                //.setSound(alarmUri)
                 .build();
         notificationManager.notify(1, notification);
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    //delete
-/*
-
-    public void setNotificationAlarm() {
-        TimerFragment timerFragmentBufor = listOfTim.get(firstAlarmClockID);
-        if (firstAlarmClock != 0 && (timerFragmentBufor.running)) {
-            Intent intent = new Intent(this, AlarmReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            intent.putExtra("power", true);
-            long milis = firstAlarmClock;
-            alarmManager.set(AlarmManager.RTC_WAKEUP, (milis + 2000), pendingIntent);
-        }
+    // minimize app by clicking back
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
-
-
-
-
-    // delete i suppose
-    public void turnOFFAlarmNotification() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-        alarmManager.cancel(pendingIntent);
-    }
-
-    void showAlarmFragment(Boolean show) {
-        AlarmFragment alarmFragment = new AlarmFragment();
-        //alarmFragment.setTimerActivity(this);
-        FragmentTransaction fragmentTransactionAlarm = getSupportFragmentManager().beginTransaction();
-        fragmentTransactionAlarm.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransactionAlarm.replace(R.id.alarm_box, alarmFragment);
-        if (show) {
-            fragmentTransactionAlarm.replace(R.id.alarm_box, alarmFragment);
-        }
-        if (!show) {
-            //mediaPlayer.stop();
-            fragmentTransactionAlarm.remove(alarmFragment);
-        }
-        fragmentTransactionAlarm.commit();
-    }
-
-
-    public void cancelAlarm() {
-        Intent intent = new Intent(this, TimerActivity.class);
-
-        AlarmManager alarmManager =
-                (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(this, 1, intent, 0);
-
-        alarmManager.cancel(pendingIntent);
-    }
-/*
-*/
-
-
-
 
 
 }
+
 
