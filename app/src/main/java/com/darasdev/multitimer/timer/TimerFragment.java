@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.darasdev.multitimer.R;
+import com.darasdev.multitimer.alarm.Alarm;
+import com.darasdev.multitimer.alarm2.Alarm2;
 
 
 /**
@@ -99,6 +101,7 @@ public class TimerFragment extends Fragment
                 break;
             case R.id.timer_value_text:
                 openSettingFragment(view, this);
+                Alarm2.stopAlarm();
                 break;
         }
     }
@@ -121,11 +124,10 @@ public class TimerFragment extends Fragment
                     countDownSeconds = countDownValueSeconds - seconds;
                     secondsToTimeFormatString(countDownSeconds);
                     timerValue.setText(timerStringTime);
-                    if((countDownSeconds <= -1) && countDownSeconds > -2){      // app need time to run MediaPlayer
-                        timerActivity.alarmStart();
-                    }
+
                     if(countDownSeconds <= -1){
                         running = false;
+
                         timerStringTime = secondsToTimeFormatString(0);
                         timerValue.setText(timerStringTime);}
                 }
@@ -152,8 +154,7 @@ public class TimerFragment extends Fragment
             timerEndClock = clockStart + (countDownValueSeconds * 1000);
 
             timerActivity.setEndTimers(getID(), timerEndClock);
-                //timerActivity.alarmStart();
-
+            timerActivity.setAlarm(timerEndClock);
         }
     }
     public void stopChronometer(View view) {
@@ -162,6 +163,7 @@ public class TimerFragment extends Fragment
             clockStop = System.currentTimeMillis();
             clockSum = clockSum + clockStop - clockStart;
         }
+        Alarm2.stopAlarm();
     }
     public void resetChronometer(View view) {
         running = false;
@@ -169,6 +171,8 @@ public class TimerFragment extends Fragment
         seconds = 0;
         timerStringTime = "00:00:00";
         timerValue.setText(timerStringTime);
+
+        Alarm2.stopAlarm();
     }
 
 

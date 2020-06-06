@@ -7,8 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.InputEvent;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.SettingsFragment;
@@ -32,6 +36,11 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
         loadData();
+
+        //  TEST!!!
+        Intent intent = new Intent(this, TimerActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 
@@ -83,7 +92,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         fragmentTransaction1.add(R.id.stopwatch_fragment, listOfSW.get(lengthOfList-1));
         fragmentTransaction1.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction1.commit();
-        //Settery
+        //Setter's
         settingsFragment = new SettingsFragment();
         stopWatchFragment.setID(lengthOfList-1);
         settingsFragment.setID(lengthOfList-1);
@@ -135,7 +144,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                 lengthOfList = listOfSW.size();
 
 
-                for (int i = 0; i < lengthOfList; i++) { //zamiana id Fragment'ów
+                for (int i = 0; i < lengthOfList; i++) { //change ID of Fragment's
                     swF = listOfSW.get(i);
                     swF.setID(i);
                 }
@@ -261,12 +270,14 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         sumSecondsTab = gson.fromJson(json, type);
 
 
-        if((listOfNames != null)) { // && (listOfSW.size() != amountOfTimers)){
+        if((listOfNames != null)) {
         int size = amountOfTimers;
         for (int i = 0 ; i < size; i++) {
-            if(i<1){       //Przypisanie parametrów dla pierwszego Fragment'u stworzonego przez odwołanie .XML
-                            //  Nie można użyć metody addSW(), gdyż stworzy ona kolejny StopWatchFragment
-                //listOfSW.set(0, new StopWatchFragment());
+            if(i<1){
+                /*
+                    if(i<1) it is for first Fragment create by XML file of Activity
+                    You cant use addSW because you create another Fragment
+                 */
                 StopWatchFragment sw = listOfSW.get(0);
 
                 sw.setName(listOfNames.get(0));
@@ -277,7 +288,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                 sw.setSaveSeconds(sumSecondsTab[0]);
                 sw.setSaveSecondsTextView(sumSecondsTab[0]);
             }
-            else {      //Stworzenie zapisanych Fragmentów
+            else {      //create another Fragment's from save
                 addSW(listOfNames.get(i), listOfBool.get(i), clockStartTab[i], clockSumTab[i], sumSecondsTab[i]);
             }
 
@@ -286,7 +297,7 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         }
     }
 
-    // Funkcja umożliwiająca przeniesienie parametrów Stopera(Fragment'u)
+    // moving parameters from one Fragment to another
     void setSWFragment(int fromID, int toID){
         StopWatchFragment swBuf1, swBuf2;
         swBuf1 = listOfSW.get(fromID);
@@ -302,6 +313,14 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     }
 
 
+    // minimize app by clicking back
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
+    }
 
 
 

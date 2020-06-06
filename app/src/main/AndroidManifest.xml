@@ -2,25 +2,47 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.darasdev.multitimer">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:launchMode="singleInstance"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".sum.SumStopwatchActivity"></activity>
+        <service
+            android:name=".alarm.AlarmService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":alarm_service"></service>
+
+        <service android:name=".alarm2.RingtonePlayerService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":alarm_service"/>
+
+        <activity android:name=".sum.SumStopwatchActivity" />
         <activity
             android:name=".stopwatch.StopWatchActivity"
             android:label="Stopwatch"
-            android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleInstance"
+            android:noHistory="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".timer.TimerActivity"
             android:label="Timer"
             android:launchMode="singleInstance"
-            android:noHistory="true"
+            android:noHistory="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
@@ -33,7 +55,20 @@
             </intent-filter>
         </activity>
 
+
+
+        <receiver android:name=".alarm2.MyReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":alarm_service">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
+
         <receiver android:name=".timer.AlarmReceiver" />
     </application>
+
 
 </manifest>

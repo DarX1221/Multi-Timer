@@ -27,7 +27,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Utworzenie wszystkich potrzebnych View
+        // Create all view's
         View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
         textView = view.findViewById(R.id.stop_watch_name);
         Button startButton = (Button) view.findViewById(R.id.start_button);
@@ -46,11 +46,11 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
 
 
 
-        //Uruchomienie funkcji Timer dla tego(this) fragmentu
+        //Run timer in this Fragment
         setTimer(clockSum);
         runTimer(view);
 
-        //Odwołanie do aktywności, umożliwia przechwycenie adresu pierwszego fragmentu
+        // Reference to Activity, it let's take the first Fragment create by XML.
         stopWatchActivity = (StopWatchActivity) getActivity();
         stopWatchActivity.setFragment(this);
 
@@ -73,7 +73,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
     private float x1, x2, y1, y2, xm, ym;
     private float touchSenstitivy = 75;
     boolean shouldClick =true;
-    // @Override
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
@@ -143,7 +143,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         return stopWatchTime;
     }
 
-    // React fo buttons ()
+    // React to buttons ()
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -240,8 +240,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
             name = "Null name timer";
         }
         textView.setText(name);
-        //StopWatchActivity sAct = getStopWatchActivity();
-        //sAct.saveData();
     }
 
 

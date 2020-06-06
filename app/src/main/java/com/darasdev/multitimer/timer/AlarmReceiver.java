@@ -16,13 +16,14 @@ import androidx.core.app.NotificationManagerCompat;
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.timer.TimerActivity;
 
+import static android.content.Context.ALARM_SERVICE;
 import static com.darasdev.multitimer.App.CHANNEL_1_ID;
 
 public class AlarmReceiver extends BroadcastReceiver {
     Boolean alarm;
     private NotificationManagerCompat notificationManager;
     Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-    MediaPlayer mediaPlayer;
+    protected MediaPlayer mediaPlayer;
 
 
     @Override
@@ -32,12 +33,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent contentIntent = PendingIntent.getActivity(context,
                 0, activityIntent, 0);
 
-        if(true) {
+
+
+        if (true) {
             notificationManager = NotificationManagerCompat.from(context);
             Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)
                     .setSmallIcon(R.drawable.ic_launcher_foreground)
                     .setContentTitle("Click me to open timers")
-                    //.setContentText("")
+                    .setContentText("AlarmReceiver.java")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                     .setContentIntent(contentIntent)
@@ -55,13 +58,20 @@ public class AlarmReceiver extends BroadcastReceiver {
                  //Thread.sleep(1500);
                  mediaPlayer.start();
                  Thread.sleep(5000);
+
              }
              catch (InterruptedException e){}
+
             mediaPlayer.stop();
-
-
         }
+
     }
+
+    private void stopAlarm() {
+        mediaPlayer.stop();
+
+    }
+
 
 
 }

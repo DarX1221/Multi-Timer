@@ -17,27 +17,29 @@ import com.darasdev.multitimer.timer.TimerActivity;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AlarmFragment extends Fragment {
+public class AlarmFragment extends Fragment {/*
     TextView textViewAlarm;
     TimerActivity timerActivity;
 
     public AlarmFragment() {
         // Required empty public constructor
     }
-
+*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
+        /*
+
         Button offAlarm = (Button) view.findViewById(R.id.button_turnoff_alarm);
 
         textViewAlarm = view.findViewById(R.id.alarm_name_text_view);
-        setAlarmName();
+        setAlarmName();*/
         return view;
     }
 
-
+/*
 
     void setTimerActivity(TimerActivity timerActivity){
         this.timerActivity = timerActivity;
@@ -51,5 +53,5 @@ public class AlarmFragment extends Fragment {
         textViewAlarm.setText(name);
     }
 
-
+*/
 }
