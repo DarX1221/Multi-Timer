@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,8 +18,10 @@ import android.widget.TextView;
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.SettingsFragment;
 
+import static com.darasdev.multitimer.App.SENSITIVY_OF_TOUCHSCREEN;
 
-public class StopWatchFragment extends Fragment implements View.OnClickListener, View.OnTouchListener{
+
+public class StopWatchFragment extends Fragment implements View.OnClickListener, View.OnTouchListener {
     boolean running = false;
     String nameTimer = "Name Timer";
     TextView textView;
@@ -39,16 +43,32 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         Button setButton = (Button) view.findViewById(R.id.setting_button);
         setButton.setOnClickListener(this);
         stopWatchValue = (TextView) view.findViewById(R.id.timer_text);
-        textView.setText(nameTimer);
         sumTextView = (TextView) view.findViewById(R.id.sum_timer_text);
         sumTextView.setText(secondsToTime(saveSeconds));
+        view.setOnTouchListener(this);
 
+        try {
+            initializeFragment();
+        } catch (Exception ex) {
+            Log.e("Stopwatch Fragment ", "Initialize Error");
+        }
 
+        return view;
+    }
 
+    private void initializeFragment() {
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        screenDPI = metrics.densityDpi;
+        touchBufor = SENSITIVY_OF_TOUCHSCREEN * screenDPI;
+
+        stopWatchValue.setOnClickListener(this);
+        textView.setText(nameTimer);
 
         //Run timer in this Fragment
         setTimer(clockSum);
-        runTimer(view);
+        runTimer();
+
 
         // Reference to Activity, it let's take the first Fragment create by XML.
         stopWatchActivity = (StopWatchActivity) getActivity();
@@ -56,23 +76,25 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
 
 
         //  TouchListener to swipe Activities   setOnClickListener will work (case MotionEvent.ACTION_BUTTON_PRESS:)
-        view.setOnTouchListener(this);
-        startButton.setOnTouchListener(this);
-        stopButton.setOnTouchListener(this);
-        resetButton.setOnTouchListener(this);
-        setButton.setOnTouchListener(this);
+
+        //startButton.setOnTouchListener(this);
+        //stopButton.setOnTouchListener(this);
+        //resetButton.setOnTouchListener(this);
+        //setButton.setOnTouchListener(this);
         textView.setOnTouchListener(this);
         stopWatchValue.setOnTouchListener(this);
+        sumTextView.setOnTouchListener(this);
 
-        return view;
     }
-
 
 
     // swipe screen(changing activity)
     private float x1, x2, y1, y2, xm, ym;
-    private float touchSenstitivy = 75;
-    boolean shouldClick =true;
+    float screenDPI;
+    float touchBufor;
+
+    boolean shouldClick = true;
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -83,29 +105,40 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
                 shouldClick = true;
                 break;
 
+            //case MotionEvent.ACTION_BUTTON_PRESS:
+
             case MotionEvent.ACTION_UP:
-                if(shouldClick){
+                if (shouldClick) {
                     v.performClick();
                 }
                 x2 = event.getX();
                 y2 = event.getY();
                 break;
+        }
+        ;
 
-            case MotionEvent.ACTION_BUTTON_PRESS:
+        if (x1 != 0 && x2 != 0 && showSettings) {
+
+            if (x1 > x2 + touchBufor) {
+                stopWatchActivity.openAnotherActivity(true, false);
+                //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
+            }
+            if (x1 + touchBufor < x2) {
+                //Toast.makeText(getContext(), "Right", Toast.LENGTH_SHORT).show();
+                stopWatchActivity.openAnotherActivity(false, true);
+            }
         }
 
-        if((x1 > x2) & (x1 > x2 + touchSenstitivy) & (x2 != 0)){
+        /*
+
+        if((x1 > x2) && (x1 > x2 + touchSenstitivy) && (x2 != 0) && (x1 != 0) && (!showSettings)){
             stopWatchActivity.openAnotherActivity(true, false);
         }
-        if((x1 < x2) & (x1 + touchSenstitivy < x2) & (x2 != 0)){
+        if((x1 < x2) && (x1 + touchSenstitivy < x2) && (x2 != 0) && (x1 != 0) && (!showSettings)){
             stopWatchActivity.openAnotherActivity(false, true);
-        }
+        }*/
         return true;
     }
-
-
-
-
 
 
     // Engine of timer
@@ -114,27 +147,31 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
     long clockNow, clockStop;
     long clockSum;
     long clockStart = System.currentTimeMillis();
-    public void runTimer(final View view) {
 
-        final Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
+    public void runTimer() {
 
-                if (running) {
-                    clockNow = System.currentTimeMillis();
-                    seconds = (int) ((clockNow - clockStart + clockSum) / 1000);
-                    stopWatchTime = secondsToTime(seconds);
-                    stopWatchValue.setText(stopWatchTime);
+        try {
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
 
+                    if (running) {
+                        clockNow = System.currentTimeMillis();
+                        seconds = (int) ((clockNow - clockStart + clockSum) / 1000);
+                        stopWatchTime = secondsToTime(seconds);
+                        stopWatchValue.setText(stopWatchTime);
+
+                    }
+                    handler.postDelayed(this, 100);
                 }
-                handler.postDelayed(this, 100);
-            }
 
-        });
+            });
+        } catch (Exception ex) {
+        }
     }
 
-    String secondsToTime(int seconds2){
+    String secondsToTime(int seconds2) {
         int seconds = seconds2;
         int hours = seconds / 3600;
         int minutes = (seconds % 3600) / 60;
@@ -159,6 +196,12 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
             case R.id.setting_button:
                 openSettingFragment(view, this);
                 break;
+
+                /*
+            case R.id.timer_text:
+                openSettingFragment(view, this);
+                break;
+                 */
         }
     }
 
@@ -168,6 +211,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
             clockStart = System.currentTimeMillis();
         }
     }
+
     public void stopChronometer(View view) {
         if (running) {
             running = false;
@@ -175,6 +219,7 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
             clockSum = clockSum + clockStop - clockStart;
         }
     }
+
     public void resetChronometer(View view) {
         saveSeconds += seconds;
         sumTextView.setText(secondsToTime(saveSeconds));
@@ -184,31 +229,34 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         stopWatchTime = "00:00:00";
         stopWatchValue.setText(stopWatchTime);
     }
-    public void setChronometer(){
-        int secondsBuf = (int)clockSum / 1000;
+
+    public void setChronometer() {
+        int secondsBuf = (int) clockSum / 1000;
         String time = secondsToTime(secondsBuf);
         stopWatchValue.setText(stopWatchTime);
     }
 
     int saveSeconds;
+
     public void setSaveSeconds(int saveSeconds) {
         this.saveSeconds = saveSeconds;
     }
+
     public void setSaveSecondsTextView(int saveSeconds) {
         this.saveSeconds = saveSeconds;
         sumTextView.setText(secondsToTime(saveSeconds));
     }
 
-    public int getSaveSeconds(){
+    public int getSaveSeconds() {
         return saveSeconds;
     }
-
 
 
     // part responsible for sliding SettingsFragment
     boolean showSettings = true;
     SettingsFragment settingsFragment;
-    public void openSettingFragment(View view, StopWatchFragment stopWatchFragment){
+
+    public void openSettingFragment(View view, StopWatchFragment stopWatchFragment) {
         int idBuffor = stopWatchFragment.getID();
 
         FragmentTransaction transactionSet = stopWatchFragment.getChildFragmentManager().beginTransaction();
@@ -218,17 +266,18 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         settingsFragment.setType(true);
         transactionSet.replace(R.id.settings_container, settingsFragment);
 
-        if(stopWatchFragment.showSettings){
+        if (stopWatchFragment.showSettings) {
             transactionSet.replace(R.id.settings_container, settingsFragment);
-            stopWatchFragment.showSettings = false;}
-        else{
+            stopWatchFragment.showSettings = false;
+        } else {
             transactionSet.remove(settingsFragment);
-            stopWatchFragment.showSettings=true; }
+            stopWatchFragment.showSettings = true;
+        }
 
         transactionSet.commit();
     }
 
-    void setTimer(long milis){
+    void setTimer(long milis) {
         seconds = (int) (milis / 1000);
         stopWatchTime = secondsToTime(seconds);
         stopWatchValue.setText(stopWatchTime);
@@ -245,14 +294,20 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
 
     // each Fragment has own ID in Activity
     int idSW;
-    public void setID(int id){   idSW = id;}
-    public int getID(){     return idSW; }
+
+    public void setID(int id) {
+        idSW = id;
+    }
+
+    public int getID() {
+        return idSW;
+    }
 
     public StopWatchActivity getStopWatchActivity() {
         return stopWatchActivity;
     }
 
-    public void deleteStopWatch(){
+    public void deleteStopWatch() {
         StopWatchActivity swAct = getStopWatchActivity();
         swAct.deleteTimer(getID(), this);
     }

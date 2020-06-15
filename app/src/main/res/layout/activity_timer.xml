@@ -28,16 +28,17 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             <fragment
                 class="com.darasdev.multitimer.timer.TimerFragment"
+                android:id="@+id/timer_fragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/timer_fragment">
+                android:layout_height="wrap_content">
 
             </fragment>
+
         </ScrollView>
         </FrameLayout>
         </LinearLayout>

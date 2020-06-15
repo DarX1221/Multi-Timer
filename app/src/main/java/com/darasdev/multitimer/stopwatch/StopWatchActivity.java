@@ -7,12 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.InputEvent;
-import android.view.KeyEvent;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.SettingsFragment;
@@ -22,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import static com.darasdev.multitimer.App.SENSITIVY_OF_TOUCHSCREEN;
 
 
 
@@ -35,15 +33,22 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        screenDPI = metrics.densityDpi;
+        touchBufor = SENSITIVY_OF_TOUCHSCREEN * screenDPI;
         loadData();
 
     }
 
+
     // swipe screen/activity
-    float touchSenstitivy = 100;
     float x1, x2, y1, y2;
-    public boolean onTouchEvent (MotionEvent touchevent){
-        switch (touchevent.getAction()){
+    float screenDPI;
+    float touchBufor;
+
+    public boolean onTouchEvent (MotionEvent touchevent) {
+        switch (touchevent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1 = touchevent.getX();
                 y1 = touchevent.getY();
@@ -51,6 +56,24 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
             case MotionEvent.ACTION_UP:
                 x2 = touchevent.getX();
                 y2 = touchevent.getY();
+                break;
+        }
+
+        if (x1 != 0 && x2 != 0) {
+
+            if (x1 > x2 + touchBufor) {
+                openAnotherActivity(true, false);
+                //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if (x1 + touchBufor < x2) {
+                //Toast.makeText(getContext(), "Right", Toast.LENGTH_SHORT).show();
+                openAnotherActivity(false, true);
+                return true;
+            }
+
+
+        /*
                 if(x1 > x2 + touchSenstitivy){
                     openAnotherActivity(true, false);
                 }
@@ -58,7 +81,10 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                     openAnotherActivity(false, true);
                 }
                 break;
-        }
+                */
+
+
+    }
         return false;
     }
 
@@ -124,6 +150,8 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                 for (int i = 0; i < size - 1; i++) {
                     setSWFragment(i + 1, i);
                     listOfSW.get(i).setChronometer();
+                    int bufor = listOfSW.get(i).saveSeconds;
+                    listOfSW.get(i).setSaveSecondsTextView(bufor);
                 }
                 swF = listOfSW.get(size - 1);
                 swF.running = false;
@@ -317,23 +345,5 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
         startActivity(startMain);
     }
 
-
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
 

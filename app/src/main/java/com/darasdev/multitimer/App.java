@@ -6,11 +6,13 @@ import android.app.NotificationManager;
 import android.os.Build;
 
 public class App extends Application {
+    public static final float SENSITIVY_OF_TOUCHSCREEN = 0.4f;
     public static final String CHANNEL_1_ID = "channel1";
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+        
     }
 
     void createNotificationChannel(){

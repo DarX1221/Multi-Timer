@@ -6,6 +6,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 
+import com.darasdev.multitimer.timer.TimerActivity;
 
 
 public class Alarm {
@@ -59,15 +60,17 @@ public class Alarm {
 
 
     public static void stopAlarm() {
-
-
         try {
-            mediaPlayer.stop();
+            mediaPlayer.stop();         //NullPointer
+            TimerActivity.instance().setNextAlarm();    // NullPointer?!
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
+
     }
+
+
 
 
 }

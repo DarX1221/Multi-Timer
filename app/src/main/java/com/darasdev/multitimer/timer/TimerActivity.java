@@ -2,16 +2,19 @@ package com.darasdev.multitimer.timer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Notification;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -21,23 +24,26 @@ import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.SettingsFragment;
 import com.darasdev.multitimer.alarm.Alarm;
 
+import com.darasdev.multitimer.alarm.AlarmReceiver;
 import com.darasdev.multitimer.stopwatch.StopWatchActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import static com.darasdev.multitimer.App.CHANNEL_1_ID;
+import static com.darasdev.multitimer.App.SENSITIVY_OF_TOUCHSCREEN;
 
 
 public class TimerActivity extends AppCompatActivity
         implements SettingsTimerFragment.FragmentNameListenerTimer {
-    private long firstAlarmClock = 0;
+
+
+    private long firstAlarmClock = Long.MAX_VALUE;
     private int firstAlarmClockID;
     private NotificationManagerCompat notificationManager;
     ArrayList<TimerFragment> listOfTim = new ArrayList();
     int lengthOfListTim = listOfTim.size();
-    private static TimerActivity inst;
+    private static TimerActivity INSTANCE;
     int amountOfTimers;
     TextView TVx1;
     TextView TVx2;
@@ -51,10 +57,21 @@ public class TimerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
-        loadData();
-        stopAlarm();
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        screenDPI = metrics.densityDpi;
+        touchBufor = SENSITIVY_OF_TOUCHSCREEN * screenDPI;
 
-        //addTimer("Test",false, System.currentTimeMillis(), 0, 10);
+        loadData();
+
+        Alarm.stopAlarm();  // clicking reset just turn off alarm
+        setNextAlarm();
+
+
+        //initializeActivity();
+        //addTimer("Test 30", false, 0, 0, 30);
+    }
+
+    private void initializeActivity() {
 
     }
 
@@ -77,8 +94,9 @@ public class TimerActivity extends AppCompatActivity
 
         //Setter's
         settingsFragment = new SettingsFragment();
-        timerFragment.setID(lengthOfListTim - 1);
-        settingsFragment.setID(lengthOfListTim - 1);
+        int ID = lengthOfListTim - 1;
+        timerFragment.setID(ID);
+        settingsFragment.setID(ID);
         timerFragment.nameTimer = name;
         timerFragment.running = running;
         //timerFragment.setTimerValue(minutes);
@@ -87,6 +105,16 @@ public class TimerActivity extends AppCompatActivity
         timerFragment.clockSum = clockSum;
         int secondsValue = (int) (seconds - (clockSum / 1000));
         timerFragment.setTimerSeconds(secondsValue);
+        if(running) {
+            timerFragment.timerEndClock = clockStart + clockSum + secondsValue * 1000;
+            endTimersList.add(ID, timerFragment.timerEndClock);
+            //setEndTimers(ID, clockStart + secondsValue * 1000);
+            //setNextAlarm();
+        }
+        else {
+            //setEndTimers(ID, Long.MAX_VALUE);
+            endTimersList.add(ID, Long.MAX_VALUE);
+        }
 
         return timerFragment;
     }
@@ -182,12 +210,16 @@ public class TimerActivity extends AppCompatActivity
         firstFragment = true;
     }
 
+    public long getFirstAlarmClock() {
+        return firstAlarmClock;
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        inst = this;
-        stopAlarm();
+
+        INSTANCE = this;
+        //stopAlarm();
     }
 
     @Override
@@ -296,19 +328,30 @@ public class TimerActivity extends AppCompatActivity
                     tim.clockSum = clockSumTabTim[0];
                     tim.countDownValueSeconds = countDownSecondsValue.get(0);
                     tim.setTimerSeconds((int) (countDownSecondsValue.get(0) - (clockSumTabTim[0] / 1000)));
+                    if(tim.running) {
+                        tim.timerEndClock = tim.clockStart + tim.clockSum + (tim.countDownSeconds * 1000);
+                        endTimersList.add(0, tim.timerEndClock);
+                    }
+                    else {
+                        tim.timerEndClock = Long.MAX_VALUE;
+                        endTimersList.add(0, Long.MAX_VALUE);
+                    }
                 } else {
                     int secondsValue = ((int) (countDownSecondsValue.get(i) - (clockSumTabTim[i] / 1000)));        // Valeu on TextView Timer
                     addTimer(listOfNamesTim.get(i), listOfBoolTim.get(i), clockStartTabTim[i], clockSumTabTim[i], countDownSecondsValue.get(i));
                 }
             }
         }
+        setLowestEndTimer();
     }
 
 
     float x1, x2, y1, y2;
-    float touchSenstitivy = 100;
+    float screenDPI;
+    float touchBufor;
 
     public boolean onTouchEvent(MotionEvent touchevent) {
+
 
         switch (touchevent.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -318,14 +361,32 @@ public class TimerActivity extends AppCompatActivity
             case MotionEvent.ACTION_UP:
                 x2 = touchevent.getX();
                 y2 = touchevent.getY();
-                if (x1 > x2 + touchSenstitivy) {
+
+                if (x1 != 0 && x2 != 0) {
+
+                    if (x1 > x2 + touchBufor) {
+                        openAnotherActivity(true, false);
+                        //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
+                    }
+                    if (x1 + touchBufor < x2) {
+                        //Toast.makeText(getContext(), "Right", Toast.LENGTH_SHORT).show();
+                        openAnotherActivity(false, true);
+
+                        break;
+                    }
+
+                }
+
+
+            /*
+                if ((x1 > x2 + touchSenstitivy) && (x1 != 0) && (x2 != 0)) {
                     openAnotherActivity(true, false);
                 }
 
-                if (x1 < x2 - touchSenstitivy) {
+                if ((x1 < x2 - touchSenstitivy) && (x1 != 0) && (x2 != 0)) {
                     openAnotherActivity(false, true);
                 }
-                break;
+                break;*/
         }
         return false;
     }
@@ -360,67 +421,98 @@ public class TimerActivity extends AppCompatActivity
         timBuf2.running = timBuf1.running;
         timBuf2.clockStart = timBuf1.clockStart;
         timBuf2.clockSum = timBuf1.clockSum;
+        timBuf2.timerEndClock = timBuf1.timerEndClock;
     }
 
 
     public static TimerActivity instance() {
-        return inst;
+        return INSTANCE;
     }
 
 
     ArrayList<Long> endTimersList = new ArrayList<>();
-
     public void setEndTimers(int id, long endTimer) {
-        do {
-            endTimersList.add(0L);
+
+        try {
+
+            if(id < endTimersList.size()-1) {
+                endTimersList.set(id, endTimer);
+            }
+            else {
+                endTimersList.add(id, endTimer);
+            }
+
+
         }
-        while (endTimersList.size() < id + 2);
+        catch (Exception ex) {
+            Toast.makeText(this, "" + ex, Toast.LENGTH_SHORT).show();
+        }
 
-        endTimersList.set(id, endTimer);
-        //endTimers[id] = endTimer;
-        this.firstAlarmClock = endTimer;
-        //setLowestEndTimer();
-        endTimersList.add(0L);
+
     }
-
 
     //  set lowest endtimer clock on long firstAlarmClock and return id of this Fragment
     public void setLowestEndTimer() {
-        amountOfTimers = listOfTim.size();
-        for (int i = 0; i <= amountOfTimers; i++) {
-            if ((endTimersList.get(i) < firstAlarmClock) && (endTimersList.get(i) != 0)) {
-                firstAlarmClock = endTimersList.get(i);
-                firstAlarmClockID = i;
+        try {
+            firstAlarmClock = Long.MAX_VALUE;
+            int amount = endTimersList.size();
+            for (int i = 0; i < amount - 1; i++) {
+                if ((endTimersList.get(i) < firstAlarmClock) && (endTimersList.get(i) != 0) &&
+                        (listOfTim.get(i).running) && (endTimersList.get(i) > System.currentTimeMillis())) {
+                    firstAlarmClock = endTimersList.get(i);
+                    firstAlarmClockID = i;
+                }
             }
         }
+        catch (Exception ex) {}
     }
 
 
 
+    public void setAlalrm(long time) {
+        long bufor= System.currentTimeMillis();
+        if((time <= firstAlarmClock) && (time > System.currentTimeMillis() + 1000)) {
+            firstAlarmClock = Long.MAX_VALUE;
+
+            AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+            Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 101, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+
+            // Test, i show how mant seconds to another set alarm
+            //long bufor2 = System.currentTimeMillis();
+            //Toast.makeText(this, "" + (time - bufor), Toast.LENGTH_SHORT).show();
+
+            ComponentName receiver = new ComponentName(this, AlarmReceiver.class);
+            PackageManager pm = this.getPackageManager();
+
+            // turn on alarm after close app
+            pm.setComponentEnabledSetting(receiver,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP);
 
 
-    void alarmStart() {
 
-        // Alarm soun
-        Alarm al = Alarm.getInstance();
-        al.playalarmSoundForXSeconds(this, 30);
+            if (checkVolume() < 30) {
+                Toast.makeText(this, "Turn up the volume to hear the alarm!", Toast.LENGTH_LONG).show();
+            }
+        }
 
-        //  Create Notification
-        Intent activityIntent = new Intent(this, TimerActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this,
-                0, activityIntent, 0);
-        notificationManager = NotificationManagerCompat.from(this);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("Click reset or pause to turn off alarm")
-                .setContentText("Click me to open timers")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setContentIntent(PendingIntent.getActivity(this, 0, activityIntent, 0))
-                .setVibrate(new long[]{1000, 1000, 1000})
-                .build();
-        notificationManager.notify(1, notification);
+    }
 
+
+
+    public void setNextAlarm() {
+        setLowestEndTimer();
+        setAlalrm(firstAlarmClock);
+    }
+
+    int checkVolume(){
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int currentVolumePercentage = 100 * currentVolume/maxVolume;
+        return currentVolumePercentage;
     }
 
     // minimize app by clicking back

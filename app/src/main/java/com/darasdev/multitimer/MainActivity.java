@@ -19,10 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //timerActivityStart();
-        //stopWatchActivityStart();
-        //sumStopWatchActivityStart();
-
+        stopWatchActivityStart();
     }
 
     float x1, x2, y1, y2;
@@ -58,18 +55,10 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    void sumStopWatchActivityStart(){
-        Intent intent = new Intent(this, SumStopwatchActivity.class);
-
-        startActivity(intent);
-        finish();
-    }
-
     void timerActivityStart(){
         Intent intent = new Intent(this, TimerActivity.class);
         startActivity(intent);
         finish();
-
     }
 
     public MainActivity getMainActivity(){
@@ -83,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
     public void addClickTimer(View view) {
         timerActivityStart();
     }
-
 
     /*
     */

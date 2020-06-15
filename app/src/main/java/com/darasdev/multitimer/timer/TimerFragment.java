@@ -6,12 +6,15 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import static com.darasdev.multitimer.App.SENSITIVY_OF_TOUCHSCREEN;
 
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.alarm.Alarm;
@@ -46,19 +49,38 @@ public class TimerFragment extends Fragment
         Button resetButton = (Button) view.findViewById(R.id.reset_button_timer);
         resetButton.setOnClickListener(this);
         Button setButton = (Button) view.findViewById(R.id.setting_button_timer);
+        view.setOnTouchListener(this);
         setButton.setOnClickListener(this);
         timerValue = (TextView) view.findViewById(R.id.timer_value_text);
+
+        try {
+            initializeFragment();
+        }
+        catch (Exception ex){
+            Log.e("Timer Fragment ", "Initialize Error");
+        }
+
+        return view;
+    }
+
+
+    private void initializeFragment() {
+
+        // sensitivy of touchscreen
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        screenDPI = metrics.densityDpi;
+        touchBufor = SENSITIVY_OF_TOUCHSCREEN * screenDPI;
+
         timerValue.setOnClickListener(this);
 
         textView.setText(nameTimer);
 
         //Run timer in this Fragment
-        runTimer(view);
+        runTimer();
 
         //  First Fragment is create by .XML layout, setFragment() let to catch this Fragment
         timerActivity = (TimerActivity) getActivity();
         timerActivity.setFragment(this);
-
 
         // set timer value, if value is null set 0
         if(timerStringTime == null){
@@ -69,17 +91,9 @@ public class TimerFragment extends Fragment
         }
         setEndTimerInActivity();
 
-        //  TouchListener to swipe Activities   setOnClickListener will work (case MotionEvent.ACTION_BUTTON_PRESS:)
-        view.setOnTouchListener(this);
-        startButton.setOnTouchListener(this);
-        stopButton.setOnTouchListener(this);
-        resetButton.setOnTouchListener(this);
-        setButton.setOnTouchListener(this);
         textView.setOnTouchListener(this);
         timerValue.setOnTouchListener(this);
 
-
-        return view;
     }
 
 
@@ -98,10 +112,18 @@ public class TimerFragment extends Fragment
             case R.id.setting_button_timer:
                 openSettingFragment(view, this);
                 break;
+
+
+                /*
             case R.id.timer_value_text:
                 openSettingFragment(view, this);
-                Alarm.stopAlarm();
+
+                timerEndClock = Long.MAX_VALUE;
+                timerActivity.endTimersList.set(getID(), Long.MAX_VALUE);
+                Alarm.stopAlarm();  // clicking reset just turn off alarm
                 break;
+                */
+
         }
     }
 
@@ -112,31 +134,33 @@ public class TimerFragment extends Fragment
     long clockNow, clockStop, timerEndClock;
     long clockSum = 0L;
     long clockStart = System.currentTimeMillis();
-    public void runTimer(final View view) {
-        final Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (running) {
-                    clockNow = System.currentTimeMillis();
-                    seconds = (int) ((clockNow - clockStart + clockSum) / 1000);
-                    countDownSeconds = countDownValueSeconds - seconds;
-                    secondsToTimeFormatString(countDownSeconds);
-                    timerValue.setText(timerStringTime);
-
-                    if(countDownSeconds <= 0){
-                        running = false;
-
-                        timerStringTime = secondsToTimeFormatString(0);
+    public void runTimer() {
+        try {
+            final Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (running) {
+                        clockNow = System.currentTimeMillis();
+                        seconds = (int) ((clockNow - clockStart + clockSum) / 1000);
+                        countDownSeconds = countDownValueSeconds - seconds;
+                        secondsToTimeFormatString(countDownSeconds);
                         timerValue.setText(timerStringTime);
 
-                        timerActivity.alarmStart();
-                    }
-                }
-                handler.postDelayed(this, 100);         // delayMillis set refresh rate of timer
-            }
+                        if (countDownSeconds <= 0) {
+                            running = false;
 
-        });
+                            timerStringTime = secondsToTimeFormatString(0);
+                            timerValue.setText(timerStringTime);
+
+                        }
+                    }
+                    handler.postDelayed(this, 100);         // delayMillis set refresh rate of timer
+                }
+
+            });
+        }
+        catch (Exception ex){}
     }
 
 
@@ -161,6 +185,9 @@ public class TimerFragment extends Fragment
             timerEndClock = clockStart + (countDownValueSeconds * 1000);
 
             timerActivity.setEndTimers(getID(), timerEndClock);
+            timerActivity.setLowestEndTimer();
+
+            timerActivity.setAlalrm(timerEndClock);
         }
     }
     public void stopChronometer(View view) {
@@ -168,6 +195,18 @@ public class TimerFragment extends Fragment
             running = false;
             clockStop = System.currentTimeMillis();
             clockSum = clockSum + clockStop - clockStart;
+
+            try {
+                timerEndClock = Long.MAX_VALUE;
+                timerActivity.endTimersList.set(getID(), Long.MAX_VALUE);
+
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+                Log.e("Timer Fragment ", "Stop chr");
+            }
+
+
         }
         Alarm.stopAlarm();  // clicking pause just turn off alarm
     }
@@ -178,7 +217,18 @@ public class TimerFragment extends Fragment
         timerStringTime = "00:00:00";
         timerValue.setText(timerStringTime);
 
-        Alarm.stopAlarm();  // clicking reset just turn off alarm
+
+
+        try {
+            timerEndClock = Long.MAX_VALUE;
+            timerActivity.setEndTimers(getID(), Long.MAX_VALUE);
+            Alarm.stopAlarm();  // clicking reset just turn off alarm
+
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            Log.e("Timer Fragment ", "Reset Chronometer Eroor");
+        }
     }
 
 
@@ -263,17 +313,12 @@ public class TimerFragment extends Fragment
 
     // swipe screen(changing activity)
     float x1, x2, y1, y2;
-    float touchSenstitivy = 75;
-    boolean shouldClick =true;
-    // @Override
+    float screenDPI;
+    float touchBufor;
+    boolean shouldClick = true;
+
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
-
-            case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
-                y1 = event.getY();
-                shouldClick = true;
-                break;
 
             case MotionEvent.ACTION_UP:
                 if(shouldClick){
@@ -283,16 +328,27 @@ public class TimerFragment extends Fragment
                 y2 = event.getY();
                 break;
 
-            case MotionEvent.ACTION_BUTTON_PRESS:
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                y1 = event.getY();
+                shouldClick = true;
+                break;
+
+            //case MotionEvent.ACTION_BUTTON_PRESS:
         }
 
-        if((x1 > x2) & (x1 > x2 + touchSenstitivy) & (x2 != 0)){
-            timerActivity.openAnotherActivity(true, false);
-            //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
-        }
-        if((x1 < x2) & (x1 + touchSenstitivy< x2) & (x2 != 0)){
-            //Toast.makeText(getContext(), "Right", Toast.LENGTH_SHORT).show();
-            timerActivity.openAnotherActivity(false, true);
+
+
+        if (x1 != 0 && x2 != 0 && showSettings) {
+
+            if (x1 > x2 + touchBufor) {
+                timerActivity.openAnotherActivity(true, false);
+                //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
+            }
+            if (x1 + touchBufor < x2) {
+                //Toast.makeText(getContext(), "Right", Toast.LENGTH_SHORT).show();
+                timerActivity.openAnotherActivity(false, true);
+            }
         }
 
         return true;
