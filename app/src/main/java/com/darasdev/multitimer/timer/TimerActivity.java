@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.darasdev.multitimer.R;
-import com.darasdev.multitimer.SettingsFragment;
 import com.darasdev.multitimer.alarm.Alarm;
 
 import com.darasdev.multitimer.alarm.AlarmReceiver;
@@ -31,7 +30,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import static com.darasdev.multitimer.App.SENSITIVY_OF_TOUCHSCREEN;
+import static com.darasdev.multitimer.MainActivity.SENSITIVY_OF_TOUCHSCREEN;
 
 
 public class TimerActivity extends AppCompatActivity
@@ -66,22 +65,15 @@ public class TimerActivity extends AppCompatActivity
         Alarm.stopAlarm();  // clicking reset just turn off alarm
         setNextAlarm();
 
-
-        //initializeActivity();
-        //addTimer("Test 30", false, 0, 0, 30);
     }
 
-    private void initializeActivity() {
-
-    }
-
+    // opening TimerActivity stops Timer
     void stopAlarm(){
         Alarm.stopAlarm();
     }
 
 
     TimerFragment timerFragment;
-    SettingsFragment settingsFragment;
 
     public TimerFragment addTimer(String name, Boolean running, long clockStart, long clockSum, int seconds) {
         timerFragment = new TimerFragment();
@@ -93,13 +85,10 @@ public class TimerActivity extends AppCompatActivity
         fragmentTransactionTim1.commit();
 
         //Setter's
-        settingsFragment = new SettingsFragment();
         int ID = lengthOfListTim - 1;
         timerFragment.setID(ID);
-        settingsFragment.setID(ID);
         timerFragment.nameTimer = name;
         timerFragment.running = running;
-        //timerFragment.setTimerValue(minutes);
         timerFragment.countDownValueSeconds = seconds;
         timerFragment.clockStart = clockStart;
         timerFragment.clockSum = clockSum;
@@ -108,11 +97,8 @@ public class TimerActivity extends AppCompatActivity
         if(running) {
             timerFragment.timerEndClock = clockStart + clockSum + secondsValue * 1000;
             endTimersList.add(ID, timerFragment.timerEndClock);
-            //setEndTimers(ID, clockStart + secondsValue * 1000);
-            //setNextAlarm();
         }
         else {
-            //setEndTimers(ID, Long.MAX_VALUE);
             endTimersList.add(ID, Long.MAX_VALUE);
         }
 
@@ -123,11 +109,9 @@ public class TimerActivity extends AppCompatActivity
     //FloatingButton add Fragment
     public void addClick(View view) {
         timerFragment = new TimerFragment();
-        settingsFragment = new SettingsFragment();
         listOfTim.add(timerFragment);
         lengthOfListTim = listOfTim.size();
         timerFragment.setID(lengthOfListTim - 1);
-        settingsFragment.setID(lengthOfListTim - 1);
 
         FragmentTransaction fragmentTransactionTim2 = getSupportFragmentManager().beginTransaction();
         fragmentTransactionTim2.add(R.id.timer_fragment, listOfTim.get(lengthOfListTim - 1));
@@ -171,9 +155,8 @@ public class TimerActivity extends AppCompatActivity
     }
 
 
-    //Set name and timer value
+    //  It is using by SettingTimerFragment and set name and timer value
     String nameTimer;
-
     @Override
     public void onInputNameSent(String name, String minutesStr, int id) {
 
@@ -198,9 +181,7 @@ public class TimerActivity extends AppCompatActivity
 
     //  First Fragment is create by .XML layout, setFragment() let to catch this Fragment
     Boolean firstFragment = false;
-
     public void setFragment(TimerFragment timerFragment) {
-
         if (!firstFragment) {
             if (listOfTim.size() <= 1) {
                 listOfTim.add(0, new TimerFragment());
@@ -210,16 +191,11 @@ public class TimerActivity extends AppCompatActivity
         firstFragment = true;
     }
 
-    public long getFirstAlarmClock() {
-        return firstAlarmClock;
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         INSTANCE = this;
-        //stopAlarm();
     }
 
     @Override
@@ -236,7 +212,6 @@ public class TimerActivity extends AppCompatActivity
         ArrayList<Integer> countDownSecondsValue = new ArrayList<>();
         long[] clockSumTabTim = new long[amountOfTimers];
         long[] clockStartTabTim = new long[amountOfTimers];
-
 
         TimerFragment tim;
         for (int i = 0; i < amountOfTimers; i++) {
@@ -346,12 +321,12 @@ public class TimerActivity extends AppCompatActivity
     }
 
 
+    // onTouchEvent is using to swipe activity
     float x1, x2, y1, y2;
     float screenDPI;
     float touchBufor;
 
     public boolean onTouchEvent(MotionEvent touchevent) {
-
 
         switch (touchevent.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -366,31 +341,16 @@ public class TimerActivity extends AppCompatActivity
 
                     if (x1 > x2 + touchBufor) {
                         openAnotherActivity(true, false);
-                        //Toast.makeText(getContext(), "Left", Toast.LENGTH_SHORT).show();
                     }
                     if (x1 + touchBufor < x2) {
-                        //Toast.makeText(getContext(), "Right", Toast.LENGTH_SHORT).show();
                         openAnotherActivity(false, true);
 
                         break;
                     }
-
                 }
-
-
-            /*
-                if ((x1 > x2 + touchSenstitivy) && (x1 != 0) && (x2 != 0)) {
-                    openAnotherActivity(true, false);
-                }
-
-                if ((x1 < x2 - touchSenstitivy) && (x1 != 0) && (x2 != 0)) {
-                    openAnotherActivity(false, true);
-                }
-                break;*/
         }
         return false;
     }
-
 
 
     StopWatchActivity stopWatchActivity = new StopWatchActivity();
@@ -409,7 +369,7 @@ public class TimerActivity extends AppCompatActivity
     }
 
 
-    //  Move values from Fragment to other one
+    //  Move values from Fragment to other one, it is using deleteTimer()
     void setTimerFragment(int fromID, int toID) {
         TimerFragment timBuf1, timBuf2;
         timBuf1 = listOfTim.get(fromID);
@@ -434,24 +394,21 @@ public class TimerActivity extends AppCompatActivity
     public void setEndTimers(int id, long endTimer) {
 
         try {
-
             if(id < endTimersList.size()-1) {
                 endTimersList.set(id, endTimer);
             }
             else {
                 endTimersList.add(id, endTimer);
             }
-
-
         }
         catch (Exception ex) {
             Toast.makeText(this, "" + ex, Toast.LENGTH_SHORT).show();
         }
 
-
     }
 
-    //  set lowest endtimer clock on long firstAlarmClock and return id of this Fragment
+
+    //  set lowest endtimer clock on: long firstAlarmClock, and return id of this Fragment
     public void setLowestEndTimer() {
         try {
             firstAlarmClock = Long.MAX_VALUE;
@@ -479,10 +436,6 @@ public class TimerActivity extends AppCompatActivity
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 101, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
 
-            // Test, i show how mant seconds to another set alarm
-            //long bufor2 = System.currentTimeMillis();
-            //Toast.makeText(this, "" + (time - bufor), Toast.LENGTH_SHORT).show();
-
             ComponentName receiver = new ComponentName(this, AlarmReceiver.class);
             PackageManager pm = this.getPackageManager();
 
@@ -492,19 +445,11 @@ public class TimerActivity extends AppCompatActivity
                     PackageManager.DONT_KILL_APP);
 
 
-
             if (checkVolume() < 30) {
                 Toast.makeText(this, "Turn up the volume to hear the alarm!", Toast.LENGTH_LONG).show();
             }
         }
 
-    }
-
-
-
-    public void setNextAlarm() {
-        setLowestEndTimer();
-        setAlalrm(firstAlarmClock);
     }
 
     int checkVolume(){
@@ -514,6 +459,13 @@ public class TimerActivity extends AppCompatActivity
         int currentVolumePercentage = 100 * currentVolume/maxVolume;
         return currentVolumePercentage;
     }
+
+
+    public void setNextAlarm() {
+        setLowestEndTimer();
+        setAlalrm(firstAlarmClock);
+    }
+
 
     // minimize app by clicking back
     @Override

@@ -118,10 +118,8 @@ public class SettingsTimerFragment extends Fragment {
             Boolean getType(){return type;}
 
             void deleteFragment(){
-
                     TimerFragment timF = (TimerFragment) getParentFragment();
                     timF.deleteTimer();
-
             }
 
         }

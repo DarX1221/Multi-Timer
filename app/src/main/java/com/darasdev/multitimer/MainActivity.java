@@ -12,7 +12,10 @@ import com.darasdev.multitimer.stopwatch.StopWatchActivity;
 import com.darasdev.multitimer.sum.SumStopwatchActivity;
 import com.darasdev.multitimer.timer.TimerActivity;
 
+//  Main window of application, its deprecated!!
+
 public class MainActivity extends AppCompatActivity {
+    public static final float SENSITIVY_OF_TOUCHSCREEN = 0.4f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,33 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         stopWatchActivityStart();
     }
-
-    float x1, x2, y1, y2;
-    public boolean onTouchEvent (MotionEvent touchevent){
-
-        switch (touchevent.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                x1 = touchevent.getX();
-                y1 = touchevent.getY();
-                break;
-            case MotionEvent.ACTION_UP:
-                x2 = touchevent.getX();
-                y2 = touchevent.getY();
-                if(x1 < x2){
-                    Toast.makeText(this, "StopWatch", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(MainActivity.this, StopWatchActivity.class);
-                    startActivity(intent);
-                }
-                if(x1 > x2){
-                    Toast.makeText(this, "Timer", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(MainActivity.this, TimerActivity.class);
-                    startActivity(intent);
-                }
-                break;
-        }
-        return false;
-    }
-
 
     void stopWatchActivityStart(){
         Intent intent = new Intent(this, StopWatchActivity.class);
@@ -72,8 +48,5 @@ public class MainActivity extends AppCompatActivity {
     public void addClickTimer(View view) {
         timerActivityStart();
     }
-
-    /*
-    */
 }
 

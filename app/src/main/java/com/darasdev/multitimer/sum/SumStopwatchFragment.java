@@ -3,7 +3,6 @@ package com.darasdev.multitimer.sum;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,9 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.darasdev.multitimer.R;
-import com.darasdev.multitimer.SettingsFragment;
-import com.darasdev.multitimer.stopwatch.StopWatchFragment;
-import com.darasdev.multitimer.sum.SumStopwatchActivity;
 
 
 /**

@@ -12,14 +12,13 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.darasdev.multitimer.R;
-import com.darasdev.multitimer.SettingsFragment;
 import com.darasdev.multitimer.timer.TimerActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import static com.darasdev.multitimer.App.SENSITIVY_OF_TOUCHSCREEN;
+import static com.darasdev.multitimer.MainActivity.SENSITIVY_OF_TOUCHSCREEN;
 
 
 
@@ -71,18 +70,6 @@ public class StopWatchActivity extends AppCompatActivity implements SettingsFrag
                 openAnotherActivity(false, true);
                 return true;
             }
-
-
-        /*
-                if(x1 > x2 + touchSenstitivy){
-                    openAnotherActivity(true, false);
-                }
-                if(x1 < x2 - touchSenstitivy){
-                    openAnotherActivity(false, true);
-                }
-                break;
-                */
-
 
     }
         return false;

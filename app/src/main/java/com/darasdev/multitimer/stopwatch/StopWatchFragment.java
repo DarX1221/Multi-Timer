@@ -16,9 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.darasdev.multitimer.R;
-import com.darasdev.multitimer.SettingsFragment;
 
-import static com.darasdev.multitimer.App.SENSITIVY_OF_TOUCHSCREEN;
+import static com.darasdev.multitimer.MainActivity.SENSITIVY_OF_TOUCHSCREEN;
 
 
 public class StopWatchFragment extends Fragment implements View.OnClickListener, View.OnTouchListener {
@@ -74,13 +73,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         stopWatchActivity = (StopWatchActivity) getActivity();
         stopWatchActivity.setFragment(this);
 
-
-        //  TouchListener to swipe Activities   setOnClickListener will work (case MotionEvent.ACTION_BUTTON_PRESS:)
-
-        //startButton.setOnTouchListener(this);
-        //stopButton.setOnTouchListener(this);
-        //resetButton.setOnTouchListener(this);
-        //setButton.setOnTouchListener(this);
         textView.setOnTouchListener(this);
         stopWatchValue.setOnTouchListener(this);
         sumTextView.setOnTouchListener(this);
@@ -128,15 +120,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
                 stopWatchActivity.openAnotherActivity(false, true);
             }
         }
-
-        /*
-
-        if((x1 > x2) && (x1 > x2 + touchSenstitivy) && (x2 != 0) && (x1 != 0) && (!showSettings)){
-            stopWatchActivity.openAnotherActivity(true, false);
-        }
-        if((x1 < x2) && (x1 + touchSenstitivy < x2) && (x2 != 0) && (x1 != 0) && (!showSettings)){
-            stopWatchActivity.openAnotherActivity(false, true);
-        }*/
         return true;
     }
 
@@ -196,12 +179,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
             case R.id.setting_button:
                 openSettingFragment(view, this);
                 break;
-
-                /*
-            case R.id.timer_text:
-                openSettingFragment(view, this);
-                break;
-                 */
         }
     }
 
@@ -263,7 +240,6 @@ public class StopWatchFragment extends Fragment implements View.OnClickListener,
         transactionSet.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         settingsFragment = new SettingsFragment();
         settingsFragment.setID(idBuffor);
-        settingsFragment.setType(true);
         transactionSet.replace(R.id.settings_container, settingsFragment);
 
         if (stopWatchFragment.showSettings) {

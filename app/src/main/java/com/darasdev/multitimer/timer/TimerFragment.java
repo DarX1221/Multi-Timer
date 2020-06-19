@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import static com.darasdev.multitimer.App.SENSITIVY_OF_TOUCHSCREEN;
+import static com.darasdev.multitimer.MainActivity.SENSITIVY_OF_TOUCHSCREEN;
 
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.alarm.Alarm;
@@ -93,7 +93,6 @@ public class TimerFragment extends Fragment
 
         textView.setOnTouchListener(this);
         timerValue.setOnTouchListener(this);
-
     }
 
 
@@ -112,18 +111,6 @@ public class TimerFragment extends Fragment
             case R.id.setting_button_timer:
                 openSettingFragment(view, this);
                 break;
-
-
-                /*
-            case R.id.timer_value_text:
-                openSettingFragment(view, this);
-
-                timerEndClock = Long.MAX_VALUE;
-                timerActivity.endTimersList.set(getID(), Long.MAX_VALUE);
-                Alarm.stopAlarm();  // clicking reset just turn off alarm
-                break;
-                */
-
         }
     }
 
@@ -217,8 +204,6 @@ public class TimerFragment extends Fragment
         timerStringTime = "00:00:00";
         timerValue.setText(timerStringTime);
 
-
-
         try {
             timerEndClock = Long.MAX_VALUE;
             timerActivity.setEndTimers(getID(), Long.MAX_VALUE);
@@ -230,7 +215,6 @@ public class TimerFragment extends Fragment
             Log.e("Timer Fragment ", "Reset Chronometer Eroor");
         }
     }
-
 
 
     boolean showSettings = true;    //Boolean set visibility of settings Fragment
@@ -336,8 +320,6 @@ public class TimerFragment extends Fragment
 
             //case MotionEvent.ACTION_BUTTON_PRESS:
         }
-
-
 
         if (x1 != 0 && x2 != 0 && showSettings) {
 

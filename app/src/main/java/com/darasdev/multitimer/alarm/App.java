@@ -1,4 +1,4 @@
-package com.darasdev.multitimer;
+package com.darasdev.multitimer.alarm;
 
 import android.app.Application;
 import android.app.NotificationChannel;
@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.os.Build;
 
 public class App extends Application {
-    public static final float SENSITIVY_OF_TOUCHSCREEN = 0.4f;
     public static final String CHANNEL_1_ID = "channel1";
     @Override
     public void onCreate() {

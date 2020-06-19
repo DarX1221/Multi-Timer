@@ -9,7 +9,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import com.darasdev.multitimer.R;
 import com.darasdev.multitimer.timer.TimerActivity;
-import static com.darasdev.multitimer.App.CHANNEL_1_ID;
+//import static com.darasdev.multitimer.alarm.App.CHANNEL_1_ID;
 
 
 
@@ -33,7 +33,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         //Notification
         notificationManager = NotificationManagerCompat.from(context);
-        Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)
+        Notification notification = new NotificationCompat.Builder(context, "channel1")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Click reset or pause to turn off alarm")
                 .setContentText("Click me to open timers")
