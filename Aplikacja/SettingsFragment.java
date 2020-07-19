@@ -1,4 +1,4 @@
-package com.darasdev.multitimer;
+package com.darasdev.multitimer.stopwatch;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.darasdev.multitimer.R;
+import com.darasdev.multitimer.stopwatch.StopWatchFragment;
+import com.darasdev.multitimer.timer.TimerFragment;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
+// This Fragment is using in StopWatch to set name
+
 public class SettingsFragment extends Fragment {
     private EditText editText;
     private Button setNameButton, deleteButton;
@@ -30,7 +33,7 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         editText = view.findViewById(R.id.editText);
 
-        //Przypisanie przycisków, listener'ów oraz funkcji wywołanych po kliknięciu
+
         // Button set name
         setNameButton = view.findViewById(R.id.setname_button);
         setNameButton.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +52,7 @@ public class SettingsFragment extends Fragment {
 
         return view;
     }
+
     private FragmentNameListener listener = new FragmentNameListener() {
         @Override
         public void onInputNameSent(String input, int id) {
@@ -67,11 +71,12 @@ public class SettingsFragment extends Fragment {
 
         if(context instanceof FragmentNameListener){
             listener = (FragmentNameListener) context;
-        }else {throw new RuntimeException(context.toString() +
+        }
+        else {throw new RuntimeException(context.toString() +
                 "implement FragmentNameListener");}
     }
 
-    // Saver
+    // Save
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
 
@@ -83,28 +88,21 @@ public class SettingsFragment extends Fragment {
         listener = null;
     }
 
+
+    // ID of StopWatch
     int idSet;
-    void setID(int id){
+    public void setID(int id){
         idSet = id;
     }
     public int getID(){
         return idSet;
     }
 
-    //  Switch type, Stopwatch = true, Timer = False
-    Boolean type;
-    void setType(Boolean type){this.type = type;}
-    Boolean getType(){return type;}
-
     void deleteFragment(){
-        if(type) {
+
             StopWatchFragment swF = (StopWatchFragment) getParentFragment();
             swF.deleteStopWatch();
-        }
-        else {
-            TimerFragment timF = (TimerFragment) getParentFragment();
-            timF.deleteTimer();
-        }
+
     }
 
 }
